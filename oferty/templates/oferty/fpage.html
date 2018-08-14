@@ -1,0 +1,116 @@
+{% extends 'oferty/base.html' %}
+{% block title %}{% endblock %}
+
+{% load l10n %}
+{% load static %}
+{% load humanize %}
+{% load math %}
+{% load crispy_forms_tags %}
+{% block body %}
+
+{% include 'oferty/search_form.html' %}
+
+<div class="containter-fluid" id="oferty">
+
+  <div class="container">
+    
+    {% if oferty %}
+
+    <div class="row jumbotron" style="margin-top: 20px;">
+      <a href="/cristal">
+        <div class="col-sm-4">
+          <img alt="" class="img-responsive" src="{% static 'oferty/cristal/apartamenty-cristal-resort-baner-1_400px.jpg' %}" />
+        </div>
+        <div class="col-sm-4">
+          <h3>Apartamenty Cristal Resort</h3>
+          <ul style="list-style-type: disc;">
+            <li>system condo</li>
+            <li>wysoki standard wykończenia</li>
+            <li>aquapark i centrum konferencyjne</li>
+            <li>sauna, siłownia, spa</li>
+            <li>panorama na dolinę Wisły</li>
+          </ul>
+          <div style="color: orange; margin-top: 7px; float: right;"><span class="glyphicon glyphicon-arrow-right"></span> klinknij, aby poznać szczególy</div>
+        </div>
+        <div class="col-sm-4">
+          <img alt="" class="img-responsive" src="{% static 'oferty/cristal/apartamenty-cristal-resort-baner-2_400px.jpg' %}" />
+        </div>
+      </a>
+    </div>
+    
+    <div class="row"> <!-- row  -->
+      
+      {% for oferta in oferty %}
+      
+      <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 nopadding"> <!-- column -->
+	<div class="oferta-fpage"> <!-- oferta fpage -->
+
+	  <!-- zdjęcie nieruchomości -->
+	  {% if oferta.zdjecia > 0 %}
+	  <div class="oferta-fpage-zdjecie">
+	    {% for photos in oferta.ofertyestphoto_set.all|dictsort:"position" %}
+	    <a href="{% get_static_prefix %}oferty/pix2/{{ photos.filename }}" data-toggle="lightbox" data-gallery="zdjecia-nieruchomosci-{{ oferta.pk }}">
+	      {% if photos.width > photos.height and photos.thumbnail %}
+	      <img alt="" class="img-responsive" src="{% get_static_prefix %}oferty/pix2/{{ photos.filename }}" />
+	      {% endif %}
+	    </a>
+	    {% endfor %}
+	  </div>
+	  {% endif %}
+	  
+	  <div class="oferta-fpage-cena">
+	    <span class="cena">{{ oferta.cena|intcomma }} zł{% if oferta.metr %}/m<sup>2</sup>{% endif %}{% if oferta.rodzaj.pk == 3 %}/m-c{% endif %}</span> 
+	  </div>
+	  <div>
+	    <h3>
+	      {{ oferta.miasto.nazwa }}, {{oferta.typ.nazwa }},
+	      {% if oferta.typ.pk == 1 or oferta.typ.pk == 6 %}
+	      {{ oferta.ofertyopisb.pow }} m<sup>2</sup>
+	      {% else %}
+	      {{ oferta.pow }} m<sup>2</sup>
+	      {% endif %}
+	    </h3>
+	  </div>
+	  <div class="row">
+	    <div class="col-lg-6">
+	      <span class="label label-success">Oferta {{ oferta.pk }}</span>
+	    </div>
+	    <div class="col-lg-6 text-right">
+	      <a href="{% url 'oferty:detail' oferta.id %}"><span class="glyphicon glyphicon-search"></span> <b>więcej</b></a>
+	    </div>
+	    
+	  </div>
+
+	</div> <!-- end oferta fpage -->
+      </div> <!-- end column -->
+
+      {% if forloop.counter|divisibleby:3  %}
+    </div> <!-- end row -->
+    <div class="row"> <!-- row -->
+      {% endif %}
+      
+      {% endfor %}
+      
+      {% else %}
+      
+      <h3>Brak ofert</h3>
+      
+      {% endif %}
+      
+      <div class="row">
+	<div class="col-lg-10 col-lg-offset-1 oferujemy">
+
+	  <h1>Oferujemy</h1>
+	  <ul>
+	    <li>Pośrednictwo w sprzedaży, kupnie, najmie domów, mieszkań, gruntów.</li>
+	    <li>Nieruchomości: Ustroń, Wisła, Cieszyn, Istebna, Jaworzynka, Koniaków, Brenna i okolice</li>
+	    <li>domy w górach, domy Ustroń, mieszkania Ustroń, domy Wisła, mieszkania Wisła, mieszkania Cieszyn, domy Brenna, działki Brenna, apartamenty Ustroń, apartamenty Wisła,</li>
+	    <li>Zapewniamy fachową pomoc w dokonywaniu formalności.</li>
+	    <li>Pomagamy w realizacji kredytów hipotecznych.</li>
+	    <li>Posiadamy licencje zawodowe i należymy do stowarzyszenia pośredników BCK SPON.</li>
+	  </ul>
+
+	</div>
+      </div>
+      
+      {% endblock %}

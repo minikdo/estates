@@ -1,0 +1,24 @@
+{% extends 'oferty/base.html' %}
+{% block title %}{% endblock %}
+
+{% load l10n %}
+{% load static %}
+
+{% block body %}
+
+{% include 'oferty/search_form.html' %}
+
+<div class="container-fluid detail" id="oferty">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 text-center">
+	<h1>Dziękujemy za wysłanie wiadomości.</h1>
+	<h1>Skontaktujemy się z Państwem wkrótce.</h1>
+      </div>
+    </div>
+  </div>
+</div>
+
+<meta http-equiv="refresh" content="3; url=https://domino.nieruchomosci.pl/" />
+
+{% endblock %}

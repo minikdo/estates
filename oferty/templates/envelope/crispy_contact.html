@@ -1,0 +1,50 @@
+{% extends "oferty/base.html" %}
+{% load envelope_tags %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+
+
+<div class="content-fluid detail" id="oferty" style="margin-top:450px; padding-top: 20px;">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+	<h1>Formularz kontaktowy</h1>
+	<form action="{% url 'oferty:crispy-contact' %}" method="post">
+	  {% csrf_token %}
+	  {% antispam_fields %}
+	  {{ form|crispy }}
+	  <button type="submit" id="send_btn" onClick='var btn = document.getElementById("send_btn");btn.className = "btn btn-lg btn-warning";btn.innerHTML = "proszę czekać";' class="btn btn-lg btn-success">Wyślij</button>
+	</form>
+      </div>
+      <div class="col-md-6">
+	<h1>Nasze biura</h1>
+	<div class="well">
+	  <div class="row">
+	    <div class="col-md-6">
+	      <h3>Wisła</h3>
+	      <p>ul. 1 Maja 60</p>
+	      <p><strong>tel. 609 46 74 46</strong></p>
+	      <p>tel. 33 855 26 46</p>
+	    </div>
+	    <div class="col-md-6">
+	      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2582.929905406279!2d18.85647031570276!3d49.655619979373576!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xe62765e4605af9e9!2sDomino+Nieruchomo%C5%9Bci!5e0!3m2!1spl!2spl!4v1445507696190" width="100%"  frameborder="0" style="border:0" allowfullscreen></iframe>
+	    </div>
+	  </div>
+	</div>
+	<div class="well">
+	  <div class="row">
+	    <div class="col-md-6">
+	      <h3>Ustroń</h3>
+	      <p>ul. Daszyńskiego 12a</p>
+	      <p><strong>tel. 603 47 99 99</strong></p>
+	      <p>tel. 33 854 34 47</p>
+	    </div>
+	    <div class="col-md-6">
+	      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2579.503841934259!2d18.81150431559318!3d49.72014187938114!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47141b8a0a81b5eb%3A0xec829ae63c760b1e!2sDomino+Nieruchomo%C5%9Bci!5e0!3m2!1spl!2spl!4v1445507471395" width="100%" frameborder="0" style="border:0;" allowfullscreen></iframe>
+	    </div>
+	  </div>
+	</div>
+      </div>
+    </div>
+    {% endblock %}

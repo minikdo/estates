@@ -1,0 +1,171 @@
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Agencja Nieruchomości Domino - Wisła, Ustroń {% block title %}{%endblock %}</title>
+
+    <meta charset="UTF-8">
+    <meta name="Keywords" content="Agencja Nieruchomości Domino - Wisła, Ustroń,domy ustroń, domy wisła, mieszkania ustroń, mieszkania wisła, działki wisła, działki ustroń" />
+    <meta name="Description" content="Agencja Nieruchomości Domino - Wisła, Ustroń" />
+    <meta name="Author" content="domino" />
+    <meta name="Copyright" content="2002 domino company" />
+    <meta name="Robots" content="index,follow,all" />
+    <meta name="Language" content="pl" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&subset=latin-ext" type="text/css" />
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.1.1/ekko-lightbox.css" />
+    
+    <link rel="stylesheet" href="{% static 'oferty/style.css' %}" type="text/css" /> 
+
+    <!-- script by jurek.tk -->
+    <script>
+      var XMLHttpRequestObject = false;
+
+      if (window.XMLHttpRequest) { XMLHttpRequestObject = new XMLHttpRequest(); } else
+      if (window.ActiveXObject) { XMLHttpRequestObject = new
+      ActiveXObject("\x4D\x69\x63\x72\x6F\x73\x6F\x66\x74\x2E\x58\x4D\x4C\x48\x54\x54\x50"); }
+
+      function getData() { var dataSource = "{% url 'oferty:index' %}" +
+      document.getElementById("get_est_id").value; if(XMLHttpRequestObject) {
+
+      XMLHttpRequestObject.open("GET", dataSource);
+
+      XMLHttpRequestObject.onreadystatechange = function() {
+      if (XMLHttpRequestObject.readyState == 4 && XMLHttpRequestObject.status == 200) {
+      location.href = dataSource;
+      } else if (XMLHttpRequestObject.readyState== 404 || XMLHttpRequestObject.status == 404) {
+                  document.getElementById("code").innerHTML = "<div class='alert alert-dismissible alert-warning' id='notfound'><button type='button' class='close' data-dismiss='alert'>&times;</button>Nieprawidłowy numer oferty</div>";
+                  }
+}
+
+XMLHttpRequestObject.send(null);
+} }
+
+</script>
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <!-- header -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{% url 'oferty:index' %}">&nbsp;</a>
+        </div>
+        
+        <!-- items -->
+        <div class="collapse navbar-collapse navbar-right" id="topNavBar">
+          <ul class="nav navbar-nav">
+	    <li><a href="{% url 'oferty:index' %}">Strona główna</a>
+	      </li>
+	    <li><a href="/najnowsze/oferty">Najnowsze oferty</a>
+	      </li>
+	    <li><a href="/sprzedane">Sprzedane</a>
+	      </li>
+	    <li><a href="/kontakt">Kontakt</a>
+	      </li>
+          </ul>
+
+	  <!-- wyszukiwarka numery oferty -->
+          <div class="navbar-form navbar-right form-inline">
+            <div class="form-group"> 
+	      <div class="input-group">
+		<input type="text" class="form-control" placeholder="numer oferty..." id="get_est_id" name="est_id" value="{{ request.GET.est_id }}">
+		<span class="input-group-btn">
+		  <button type="submit" onclick="getData()" class="btn btn-secondary">Szukaj</button>
+		</span>
+	      </div>
+	    </div>
+	  </div>
+        </div>
+      </div>
+    </nav>
+
+    <p id="code">
+
+    
+    <!-- block oferty -->
+    {% block body %}{% endblock %}
+
+	
+
+
+	
+</div> <!-- end container -->
+</div> <!-- end container-fluid -->
+
+<!-- footer -->
+<footer class="footer">
+  <div class="container">
+	<div class="row">
+	  <div class="col-xs-6 col-sm-4 col-md-3">
+	    <p><strong>Domino Nieruchomości</strong></p>
+	    <p>Wisła, ul. 1 Maja 60<br />
+	      <strong>tel. (+48) 609 46 74 46</strong>
+	    </p>
+	    <p>Ustroń, ul. Daszyńskiego 12a<br />
+	      <strong>tel. (+48) 603 47 99 99</strong>
+	    </p>
+	  </div>
+	  <div class="col-xs-3 col-sm-6 col-md-7">
+	    <a href="#">Nieruchomości Wisła, Ustroń, Istebna, Jaworzynka, Koniaków, Cieszyn</a>
+	  </div>
+	  <div class="col-xs-3 col-sm-2 col-md-2 text-center">
+	    <p>Powered by:</p>
+	    <p><a href="https://debian.org">
+	      <img alt="Debian" src="{% static 'oferty/images/logo-debian.svg' %}" id="debian-logo" /></a>
+	    </p>
+	  </div>
+	</div>
+	<div class="row">
+	  <div class="column">
+	    <p class="text-muted text-center">©2002-{% now "Y" %}
+	      domino.nieruchomosci.pl Wszelkie prawa zastrzeżone.
+	    </p>
+	  </div>
+	</div>
+      </div>
+    </footer>
+
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- Jurek script -->
+    <script>
+      document.getElementById('get_est_id').onkeypress = function(e) {
+      var event = e || window.event;
+      var charCode = event.which || event.keyCode;
+
+      if ( charCode == '13' ) {
+      getData();
+      return false;
+      }
+      }
+    </script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.1.1/ekko-lightbox.js"></script>
+    <script type="text/javascript" src="{% static 'oferty/ekko.js' %}"></script>
+
+
+    
+
+  </body>
+</html>

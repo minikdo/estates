@@ -1,0 +1,213 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400&subset=latin,latin-ext);
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    background: #ffffff url("images/top_baner2.jpg") no-repeat;
+    background-size: contain;
+    background-position: center top;
+    background-attachment: fixed;
+    color: darkgreen;
+    font-family: "Open Sans";
+    /* Margin bottom by footer height */
+    margin-bottom: 164px;
+}
+
+@media (max-width: 500px) {
+    body {
+	background: #ffffff;
+    }
+}
+
+a {
+    color: darkgreen;
+}
+a:hover {
+    color: darkgreen;
+}
+ul {
+    list-style: none;
+}
+hr {
+    border-color: #e7e7e7;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #e7e7e7;
+}
+.navbar {
+    background-color: #004500;
+    border-radius: 0;
+    opacity: 0.8;
+}
+.navbar-brand {
+    width: 200px;
+    height: 53px;
+    background-image: url("images/logo-domino-3.svg");
+    background-size: 200px 53px;
+    min-width: 60px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.pagination li a {
+    color: darkgreen;
+}
+.pagination li.active span:hover {
+    background-color: darkgreen;
+}
+.pagination li.active span {
+    background-color: darkgreen;
+    color: #fff;
+}
+
+#wyszukiwarka {
+    opacity: 0.65;
+    font-size: 120%;
+    margin-top: 180px;
+    margin-bottom: 130px;
+}
+#wyszukiwarka .form-control, .form-control button {
+    font-size: 16px;
+    height: inherit;
+}
+.oferta {
+    margin-top: 10px;
+    border: 1px solid #efecec;
+    background-color: #f1f1f1;
+}
+.oferta h2, h3 {
+    margin-top: 15px;
+}
+.oferta div img {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+.oferta-fpage {
+    margin: 7px;
+    padding: 10px;
+    height: 320px;
+    background-color: #f1f1f1;
+    white-space: nowrap;
+}
+.oferta-fpage-cena {
+    position: relative;
+    top: -200px;
+    float: right;
+    text-align: right;
+    background-color: #f6f6f6;
+    opacity: 0.7;
+    font-size: 140%;
+    padding: 5px;
+}
+.oferta-fpage-zdjecie {
+    width: 356px;
+    height: 220px;
+    overflow: hidden;
+}
+.cena {
+    color: orange;
+    font-weight: bold;
+}
+.numer_oferty {
+    color: gray;
+}
+
+#oferty {
+    background-color: white;
+    opacity: 0.95;
+}
+
+#debian-logo {
+    width: 50px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 170px;
+    background-color: #f5f5f5;
+    padding-top: 10px;
+}
+.opis_szczegolowy {
+
+    float: left;
+    width: 100%;
+/*    background-color: #f5f5f5; */
+    margin-bottom: 6px;
+    padding: 3px 0 5px 0;
+    color: #7e7e7e;
+}
+.cena_metr {
+    color: #7e7e7e;
+}
+.detail {
+    margin-top: 74px;
+}
+.modal-body {
+    background-color: black;
+    padding: 3px;
+}
+.modal-open {
+    overflow-y: scroll;
+}
+.modal-backdrop {
+    opacity: 0.7 !important;
+}
+.detail th {
+    color: #ea9700;
+    font-size: 115%;
+}
+.detail h2 {
+    margin-top: 40px;
+}
+.menu-padding {
+    padding-top:40px;
+}
+.content p {
+    margin-bottom:20px;
+}
+.sticky {
+    position:fixed;
+    top:0;
+}
+.nopadding {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.sprzedane {
+    position:relative;
+    top: -194px;
+    width: 102%;
+    font-size: 24px;
+    font-weight: bold;
+    background-color: #f6f6f6;
+    opacity: 0.7;
+}
+.padding_head {
+    padding: 20px 0 20px 0;
+}
+.oferujemy {
+    margin-top: 35px;
+    margin-bottom: 45px;
+}
+.oferujemy ul {
+    list-style-type: disc;
+    font-size: 18px;
+    padding: 20px 30px 20px 30px;
+}
+.oferujemy li {
+    padding: 5px;
+}
+#notfound {
+    position: absolute;
+    left: 45%;
+    top: 5px;
+    box-shadow: 5px 5px 2px #000;
+    z-index: 1030;
+}

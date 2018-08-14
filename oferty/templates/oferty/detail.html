@@ -1,0 +1,440 @@
+{% extends 'oferty/base.html' %}
+{% block title %}{% endblock %}
+
+{% load l10n %}
+{% load static %}
+{% load humanize %}
+{% load math %}
+{% load envelope_tags %}
+
+{% block body %}
+
+<div class="container-fluid detail" id="oferty">
+  <div class="container">
+    <div class="row menu">
+      <div class="col-md-8">
+	<h2><button class="glyphicon glyphicon-chevron-left" value="Powrót" onClick="javascript:history.go(-1);"></button> {{ ofertyest.rodzaj.nazwa|capfirst }}, {{ ofertyest.miasto.nazwa }}, {{ ofertyest.nazwa.nazwa }}</h2>
+      </div>
+      <div class="col-md-4 text-right">
+	<h2><span class="cena">{{ ofertyest.cena|intcomma }} zł{% if ofertyest.metr %}/m<sup>2</sup>{% endif %}{% if ofertyest.rodzaj.pk == 3 %}/m-c{% endif %}</span></h2>
+      </div>
+
+      <div class="row"><div class="col-md-12"><hr></div></div>
+
+      <div class="col-md-8">
+	{% if ofertyest.zdjecia > 0 %}
+	{% for photos in ofertyest.ofertyestphoto_set.all|dictsort:"position" %}
+	<a href="{% get_static_prefix %}oferty/pix2/{{ photos.filename }}" data-toggle="lightbox" data-gallery="zdjecia-nieruchomosci-{{ oferta.pk }}">
+	  {% if photos.width > photos.height and photos.thumbnail %}
+	  <img alt="" class="img-responsive" src="{% get_static_prefix %}oferty/pix2/{{ photos.filename }}" />
+	  {% endif %}
+	</a>
+	{% endfor %}
+	{% if ofertyest.pdf == 1 %}
+	<p><a href="{% get_static_prefix %}oferty/pdfy/{{ ofertyest.pk }}.pdf"><span class="glyphicon glyphicon-file" style="font-size: 2em; padding-top: 10px;"></span>pdf</a></p>
+	{% endif %}
+	{% endif %}
+      </div>
+      <div class="col-md-4">
+	<div class="panel panel-success">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">Kontakt</h3>
+	  </div>
+	  <div class="panel-body">
+	    <table class="table">
+	      <tr>
+		<td>pośrednik</td>
+		<td>
+		  {% if ofertyest.kto == 3 or ofertyest.kto == 8 or ofertyest.kto == 12 or ofertyest.kto == 13 or ofertyest.kto == 14 %}
+		  Agnieszka Ściwiarska
+		  {% else %}
+		  Sebastian Młynarczyk
+		  {% endif %}
+		</td>
+	      </tr>
+	      <tr>
+		<td>tel.</td>
+		<td>
+		  {% if ofertyest.kto == 3 or ofertyest.kto == 8 or ofertyest.kto == 12 or ofertyest.kto == 13 or ofertyest.kto == 14 %}
+		  603 47 99 99
+		  {% else %}
+		  609 46 74 46
+		  {% endif %}
+		</td>
+	      </tr>
+	      <tr>
+		<td>oferta numer</td>
+		<td>{{ ofertyest.pk }}</td>
+	      </tr>
+	    </table>
+	    <div>
+
+	      {% load envelope_tags crispy_forms_tags %}
+
+	      <form action="{% url 'oferty:detail' ofertyest.pk %}" method="post">
+		{% csrf_token %}
+		{% antispam_fields %}
+		{{ form|crispy }}
+
+		<button type="submit" id="send_btn" onClick='var btn = document.getElementById("send_btn");btn.className = "btn btn-lg btn-warning";btn.innerHTML = "proszę czekać";' class="btn btn-lg btn-success">Wyślij</button>
+	      </form>
+	    </div>
+
+	  </div>
+	</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 hidden-xs hidden-sm">
+	<hr>
+	<div class="well">
+	  <div class="row">
+	    <div class="col-md-3 text-center">
+	      <p class="cena">Cena</p>
+	      <h3>{{ ofertyest.cena|intcomma }} zł{% if ofertyest.metr %}/m<sup>2</sup>{% endif %}{% if ofertyest.rodzaj.pk == 3 %}/m-c{% endif %}</h3>
+	    </div>
+
+	    {% if ofertyest.typ.pk == 2 or ofertyest.typ.pk == 4 %}
+	    <!-- krótki opis mieszkanie -->
+
+	    <div class="col-md-3 text-center">
+	      <p class="cena">Powierzchnia</p>
+	      <h3>{{ ofertyest.pow }} m<sup>2</sup></h3>
+	    </div>
+	    <div class="col-md-3 text-center">
+	      <p class="cena">Liczba pokoi</p>
+	      <h3>{{ ofertyest.ofertydf.roomnum }}</h3>
+	    </div>
+	    <div class="col-md-3 text-center">
+	      <p class="cena">Piętro</p>
+	      <h3>{{ ofertyest.ofertydf.floorno }} / {{ ofertyest.ofertydf.floornum }}</h3>
+	    </div>
+
+	    {% elif ofertyest.typ.pk == 1 or ofertyest.typ.pk == 6 %}
+	    <!-- krótki opis dom i pensjonat -->
+
+	    <div class="col-md-3 text-center">
+	      <p class="cena">Powierzchnia</p>
+	      <h3>{{ ofertyest.ofertyopisb.pow }} m<sup>2</sup></h3>
+	    </div>
+	    <div class="col-md-3 text-center">
+	      <p class="cena">Pow. gruntu</p>
+	      <h3>{{ ofertyest.pow }} m<sup>2</sup></h3>
+	    </div>
+	    <div class="col-md-3 text-center">
+	      <p class="cena">Lokalizacja</p>
+	      <h3>{{ ofertyest.ofertydb.lt.name_pl }}</h3>
+	    </div>
+
+	    {% elif ofertyest.typ.pk == 3 %}
+	    <!-- krótki opis grunt -->
+
+	    <div class="col-md-3 text-center">
+	      <p class="cena">Pow. gruntu</p>
+	      <h3>{{ ofertyest.pow }} m<sup>2</sup></h3>
+	    </div>
+
+	    {% endif %}
+
+	  </div>
+	</div>
+	<hr>
+      </div>
+    </div>
+
+
+    <div class="row">
+
+      {% if ofertyest.typ.pk == 1 or ofertyest.typ.pk == 6 %}
+      <!-- dom, pensjonat -->
+
+      <div class="col-md-6">
+	<table class="table table-striped">
+	  <thead>
+	    <tr>
+              <th colspan='2'>DANE OGÓLNE</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr>
+              <td>Powierzchnia budynku</td>
+              <td>{{ ofertyest.ofertyopisb.pow }} m<sup>2</sup></td>
+	    </tr>
+	    <tr>
+              <td>Powierzchnia gruntu</td>
+              <td>{{ ofertyest.pow }} m<sup>2</sup></td>
+	    </tr>
+	    <tr>
+              <td>Budulec</td>
+              <td>{{ ofertyest.ofertyopisb.budulec }}</td>
+	    </tr>
+	    <tr>
+              <td>Rok budowy</td>
+              <td>{{ ofertyest.ofertyopisb.rok_bud }}</td>
+	    </tr>
+	    <tr>
+              <td>Stan techniczny</td>
+              <td>{{ ofertyest.ofertyopisb.stan }}</td>
+	    </tr>
+	    <tr>
+              <td>Stropy</td>
+              <td>{{ ofertyest.ofertyopisb.stropy }}</td>
+	    </tr>
+	    <tr>
+              <td>Elewacja</td>
+              <td>{{ ofertyest.ofertyopisb.elewacja }}</td>
+	    </tr>
+	    <tr>
+              <td>Pokrycie dachu</td>
+              <td>{{ ofertyest.ofertyopisb.dach }}</td>
+	    </tr>
+	    <tr>
+              <td>Ogrzewanie</td>
+              <td>{{ ofertyest.ofertyopisb.ogrzew }}</td>
+	    </tr>
+	  </tbody>
+	</table>
+      </div>
+      <div class="col-md-6">
+	<table class="table table-striped">
+	  <thead>
+	    <th colspan="2">MEDIA</th>
+	  </thead>
+	  <tbody>
+	    <tr>
+              <td>Gaz</td>
+              <td>{{ ofertyest.ofertyopisb.gaz }}</td>
+	    </tr>
+	    <tr>
+              <td>Woda</td>
+              <td>{{ ofertyest.ofertyopisb.woda }}</td>
+	    </tr>
+	    <tr>
+              <td>Kanalizacja</td>
+              <td>{{ ofertyest.ofertyopisb.kan }}</td>
+	    </tr>
+	  </tbody>
+	</table>
+	<table class="table table-striped">
+	  <thead>
+	    <th colspan="2">DODATKOWE INFORMACJE</th>
+	  </thead>
+	  <tbody>
+	    <tr>
+              <td>Garaż</td>
+              <td>{{ ofertyest.ofertyopisb.garaz }}</td>
+	    </tr>
+	    <tr>
+              <td>Ogrodzenie</td>
+              <td>{{ ofertyest.ofertyopisb.ogrodz }}</td>
+	    </tr>
+	    <tr>
+              <td>Otoczenie</td>
+              <td>{{ ofertyest.ofertyopisb.otoczenie }}</td>
+	    </tr>
+	  </tbody>
+	</table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+	<table class="table table-striped">
+	  <thead>
+	    <th colspan="2">OPIS KONDYGNACJI</th>
+	  </thead>
+	  <tbody>
+	    <tr>
+              <td>Piwnica</td>
+              <td>{{ ofertyest.ofertyopisb.piwnica }}</td>
+	    </tr>
+	    <tr>
+              <td>Parter</td>
+              <td>{{ ofertyest.ofertyopisb.parter }}</td>
+	    </tr>
+	    <tr>
+              <td>I piętro</td>
+              <td>{{ ofertyest.ofertyopisb.ip }}</td>
+	    </tr>
+	    <tr>
+              <td>Poddasze</td>
+              <td>{{ ofertyest.ofertyopisb.poddasze }}</td>
+	    </tr>
+	    <tr>
+              <td>Stolarka okienna</td>
+              <td>{{ ofertyest.ofertyopisb.okna }}</td>
+	    </tr>
+	    <tr>
+              <td>Stolarka drzwiowa</td>
+              <td>{{ ofertyest.ofertyopisb.drzwi }}</td>
+	    </tr>
+	    <tr>
+              <td>Podłogi</td>
+              <td>{{ ofertyest.ofertyopisb.podlogi }}</td>
+	    </tr>
+	    <tr>
+              <td>Ściany</td>
+              <td>{{ ofertyest.ofertyopisb.sciany }}</td>
+	    </tr>
+	  </tbody>
+	</table>
+      </div>
+
+      {% elif ofertyest.typ.pk == 2 or ofertyest.typ.pk == 4 %}
+      <!-- mieszkanie, lokal handlowy -->
+
+      <div class="col-md-6">
+	<table class="table table-striped">
+	  <thead>
+	    <tr>
+              <th colspan='2'>INFORMACJE OGÓLNE</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr>
+              <td>Powierzchnia</td>
+              <td>{{ ofertyest.pow }} m<sup>2</sup></td>
+	    </tr>
+	    <tr>
+              <td>Piętro</td>
+              <td>{{ ofertyest.ofertydf.floorno }} / {{ ofertyest.ofertydf.floornum }}</td>
+	    </tr>
+	    <tr>
+              <td>Ilość pokoi</td>
+              <td>{{ ofertyest.ofertydf.roomnum }}</td>
+	    </tr>
+	    <tr>
+              <td>Stan techniczny</td>
+              <td>{{ ofertyest.ofertydf.status.name_pl }}</td>
+	    </tr>
+	    <tr>
+              <td>Lokalizacja</td>
+              <td>{{ ofertyest.ofertydf.locationtype.name_pl }}</td>
+	    </tr>
+	  </tbody>
+	</table>
+	<table class="table table-striped">
+	  <thead>
+	    <tr>
+              <th colspan='2'>OPIS MIESZKANIA</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr>
+              <td>Okna</td>
+              <td>{{ ofertyest.ofertyopism.okna }}</td>
+	    </tr>
+	    <tr>
+              <td>Podłogi</td>
+              <td>{{ ofertyest.ofertyopism.podlogi }}</td>
+	    </tr>
+	    <tr>
+              <td>Ściany</td>
+              <td>{{ ofertyest.ofertyopism.sciany }}</td>
+	    </tr>
+	    <tr>
+              <td>Osobne wc</td>
+              <td>{% if ofertyest.ofertyopism.wc %}tak{% else %}nie{% endif %}</td>
+	    </tr>
+	    <tr>
+              <td>Balkon</td>
+              <td>{{ ofertyest.ofertyopism.balkon }}</td>
+	    </tr>
+	    <tr>
+              <td>Ogrzewanie</td>
+              <td>{{ ofertyest.ofertyopism.ogrz }}</td>
+	    </tr>
+	    <tr>
+              <td>Garaż</td>
+              <td>{{ ofertyest.ofertyopism.garaz }}</td>
+	    </tr>
+	  </tbody>
+	</table>
+      </div>
+      <div class="col-md-6">
+	<table class="table table-striped">
+	  <thead>
+	    <th colspan="2">INFORMACJA O BUDYNKU</th>
+	  </thead>
+	  <tbody>
+	    <tr>
+              <td>Typ budynku</td>
+              <td>{{ ofertyest.ofertydf.buildingtype.name_pl }}</td>
+	    </tr>
+	    <tr>
+              <td>Rok budowy</td>
+              <td>{{ ofertyest.ofertydf.builtyear }}</td>
+	    </tr>
+	    <tr>
+              <td>Lokalizacja</td>
+              <td>{{ ofertyest.ofertyopism.lok }}</td>
+	    </tr>
+	  </tbody>
+	</table>
+	<table class="table table-striped">
+	  <thead>
+	    <th colspan="2">DODATKOWE INFORMACJE</th>
+	  </thead>
+	  <tbody>
+	    <tr>
+              <td>Czynsz / opłaty</td>
+              <td>{{ ofertyest.ofertyopism.czynsz }}</td>
+	    </tr>
+	    <tr>
+              <td>Rodzaj własności</td>
+              <td>{{ ofertyest.ofertydf.flatownership.name_pl }}</td>
+	    </tr>
+	    <tr>
+              <td>Wyposażenie w cenie</td>
+              <td>{{ ofertyest.ofertyopism.wyp }}</td>
+	    </tr>
+	    <tr>
+              <td>Wyposażenie dodatkowe</td>
+              <td>{{ ofertyest.ofertyopism.wyp_dod }}</td>
+	    </tr>
+	  </tbody>
+	</table>
+      </div>
+
+      
+      {% elif ofertyest.typ.pk == 3 %}
+      <!-- działka -->
+
+      <div class="col-md-12">
+	<div class="well">
+	      <p class="cena">Opis</p>
+	      
+	      <p>{{ ofertyest.opis }}</p></div>
+      </div>
+
+      {% endif %}
+
+      <div class="row"><div class="col-md-12">&nbsp;</div></div>
+    </div> <!-- row -->
+  </div>
+</div>
+
+<script>
+$(document).ready(function () {
+
+    var menu = $('.menu');
+    var origOffsetY = menu.offset().top;
+
+    function scroll() {
+        if ($(window).scrollTop() >= origOffsetY) {
+            $('.menu').addClass('sticky');
+            $('.content').addClass('menu-padding');
+        } else {
+            $('.menu').removeClass('sticky');
+            $('.content').removeClass('menu-padding');
+        }
+
+
+    }
+
+    document.onscroll = scroll;
+
+});
+</script>
+
+{% endblock %}

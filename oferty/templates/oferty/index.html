@@ -1,0 +1,178 @@
+{% extends 'oferty/base.html' %}
+{% block title %}{% endblock %}
+
+{% load l10n %}
+{% load static %}
+{% load humanize %}
+{% load math %}
+{% load crispy_forms_tags %}
+{% block body %}
+
+{% include 'oferty/search_form.html' %}
+
+    <div class="containter-fluid" id="oferty">
+      <div class="container">
+
+	{% if najnowsze %}
+	<div class="padding_head">
+	  <h1>Najnowsze oferty</h1>
+	</div>
+	{% endif %}
+
+	{% if sprzedane %}
+	<div class="padding_head">
+	  <h1>Wybrane oferty sprzedane za naszym pośrednictwem</h1>
+	</div>
+	{% endif %}
+	
+    {% if oferty %}
+
+	{% for oferta in oferty %}
+
+	{% if najnowsze %}
+	<h2>{{ oferta.data }}</h2>
+	{% endif %}
+
+	
+    <div class="row oferta"> <!-- oferta -->
+      <div class="col-xs-12 col-sm-5 col-md-5 col-lg-3">
+	<!-- /oferty/{{oferta.typ.nazwa}}-na-{{oferta.rodzaj.nazwa}}-{{oferta.cena}}zl-o{{oferta.pk}} -->
+	{% if oferta.zdjecia > 0 %}
+	{% for photos in oferta.ofertyestphoto_set.all|dictsort:"position" %}
+	<a href="{% get_static_prefix %}oferty/pix2/{{ photos.filename }}" data-toggle="lightbox" data-gallery="zdjecia-nieruchomosci-{{ oferta.pk }}">
+	  {% if photos.width > photos.height and photos.thumbnail %}
+	  <img alt="" src="{% get_static_prefix %}oferty/pix2/265/{{ photos.filename }}" /></br> zobacz zdjęcia
+	  {% endif %}
+	</a>
+	{% endfor %}
+	{% if sprzedane == 1 %}
+	<div class='text-center sprzedane'>
+	  {% if oferta.rodzaj.pk == 3 %}WYNAJĘTE
+	  {% else %}SPRZEDANE
+	  {% endif %}
+	</div>
+
+	{% endif %}
+	{% endif %}
+      </div>
+      
+
+
+      <div class="col-xs-12 col-sm-7 col-md-7 col-lg-9">
+	<div class="row">
+	  <div class="col-md-7">
+	    <h2>{{ oferta.nazwa.nazwa }},
+	      {% if oferta.typ.pk == 1 or oferta.typ.pk == 6 %}
+	      {{ oferta.ofertyopisb.pow }} m<sup>2</sup>
+	      {% else %}
+	      {{ oferta.pow }} m<sup>2</sup>
+	      {% endif %}
+	    </h2>
+	    <h3>{{ oferta.miasto.nazwa }}</h3>
+	  </div>
+	  <div class="col-md-5 text-right">
+	    <h2><span class="cena">{{ oferta.cena|intcomma }} zł{% if oferta.metr %}/m<sup>2</sup>{% endif %}{% if oferta.rodzaj.pk == 3 %}/m-c{% endif %}</span> 
+	    </h2>
+	    <h4>
+	      <span class="cena_metr">
+		{% if not oferta.metr %}
+		{% if oferta.typ.pk == 1 or oferta.typ.pk == 6 %}
+		{{ oferta.cena|div:oferta.ofertyopisb.pow|floatformat:"0"|intcomma }}
+		{% else %}
+		{{ oferta.cena|div:oferta.pow|floatformat:"0"|intcomma }}
+		{% endif %}zł/m<sup>2</sup>
+		{% endif %}
+	      </span>
+	    </h4>
+	  </div>
+	</div>
+	<div class="row">
+	  <div class="col-md-12">
+	    <div class="opis_szczegolowy">
+	      {% if oferta.typ.pk == 1 or oferta.typ.pk == 6 %}
+	      <span class="label label-default">Pow. gruntu: {{ oferta.pow }} m<sup>2</sup></span>
+	      <span class="label label-default">Pokoje: {{ oferta.ofertydb.roomnum }}</span>
+	      <span class="label label-default">Łazienki: {{ oferta.ofertydb.bathnum }}</span>
+	      <span class="label label-default">Rok: {{ oferta.ofertydb.builtyear }}</span>
+	      <span class="label label-default">{{ oferta.ofertydb.s.name_pl }}</span>
+	      
+	      {% elif oferta.typ.pk == 2 %}
+	      <span class="label label-default">Pokoje {{ oferta.ofertydf.roomnum }}</span>
+	      <span class="label label-default">Piętro {{ oferta.ofertydf.floorno }}/{{ oferta.ofertydf.floornum }}</span>
+	      <span class="label label-default">Rok {{ oferta.ofertydf.builtyear }}</span>
+	      <span class="label label-success">{{ oferta.ofertydf.locationtype.name_pl }}</span>
+	      <span class="label label-success">{{ oferta.ofertydf.status.name_pl }}</span>
+	      {% else %}
+
+	      {% endif %}
+	      <span class="label label-warning">Oferta {{ oferta.pk }}</span>
+	    </div>
+	  </div>
+	</div>
+	<div>
+	  <p>{{ oferta.opis }}</p>
+	  {% if oferta.status == 0 %}
+          <p class="text-right"><a href="{% url 'oferty:detail' oferta.id %}"><span class="glyphicon glyphicon-search"></span> <b>więcej</b></a></p>
+          {% endif %}
+	</div>
+      </div>
+    </div> <!-- end row oferty -->
+
+
+
+
+
+
+
+    {% endfor %}
+
+
+    <!-- Paginator -->
+    <div class="row text-center">
+      <nav aria-label="Page navigation">
+	{% if oferty.has_other_pages %}
+	<ul class="pagination">
+	  {% if oferty.has_previous %}
+	  <li><a aria-label="Previous" href="?page={{ oferty.previous_page_number }}">&laquo;</a>
+	  </li>
+	  {% else %}
+	  <li class="disabled"><span>&laquo;</span></li>
+	  {% endif %}
+	  {% for pages in oferty.paginator.page_range %}
+	  {% if oferty.number == pages %}
+	  <li class="active"><span>{{pages}}
+	      <span class="sr-only">(current)</span></span></li>
+	  {% else %}
+	  <li><a href="?page={{pages}}">{{pages}}</a></li>
+	  {% endif %}
+	  {% endfor %}
+	  {% if oferty.has_next %}
+	  <li><a href="?page={{oferty.next_page_number}}">&raquo;</a></li>
+	  {% else %}
+	  <li class="disabled"><span>&raquo;</span></li>
+	  {% endif %}
+	</ul>
+	{% endif %}
+      </nav>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+    {% else %}
+
+      <h3>Brak ofert w tych kryteriach wyszukiwania</h3>
+
+    {% endif %}
+
+
+      
+{% endblock %}

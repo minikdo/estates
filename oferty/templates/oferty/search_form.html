@@ -1,0 +1,17 @@
+{% load crispy_forms_tags %}
+
+    <div class="container"> <!-- container -->
+      <div class="row"> <!-- main search form -->
+	<div class="col-md-12 col-lg-8 col-lg-offset-2 jumbotron" id="wyszukiwarka">
+          <form class="form-inline" role="search" method="post" action="{% url 'oferty:post_data' %}">
+            {% csrf_token %}
+	    {{ form|crispy }}
+	    <div id="div_id_typ" class="form-group">
+	      <div>
+		<button type="submit" class="btn btn-default">Szukaj</button>
+	      </div>
+	    </div>
+          </form>
+	</div>
+      </div> <!-- end main search form -->
+    </div> <!-- end container -->
