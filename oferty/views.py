@@ -1,17 +1,35 @@
 from django.views import generic
-from django import template
-#from django.views.generic.edit import CreateView, UpdateView, DeleteView
+# from django import template
+# from django.views.generic.edit import CreateView, UpdateView, DeleteView
 # from django.core.urlresolvers import reverse_lazy
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404, redirect, render_to_response
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
-from .models import OfertyEst, OfertyFpage, OfertyMiasto, OfertyRodzaj, OfertyTyp
+from .models import OfertyEst, OfertyFpage, OfertyMiasto, OfertyRodzaj, \
+    OfertyTyp
 from .forms import OfertySearchForm, DetailContactForm
 from django.utils.text import slugify
-from envelope.views import ContactView
+from envelope.views import ContactView as EnvelopeContactView
+from .forms import CategorizedContactForm
+
+from django.views.generic import FormView
+
 from django.utils.translation import ugettext_lazy as _
+
+
+class ContactView(EnvelopeContactView):
+    form_class = CategorizedContactForm
+    template_name = 'envelope/crispy_contact.html'
+    success_url = "/dziekujemy"
+
+    def get_initial(self):
+        """
+        Automatically fills form fields for authenticated users.
+        """
+
+        return FormView.get_initial(self)
 
 
 def post_data(request):
@@ -19,21 +37,24 @@ def post_data(request):
     Slugify offer search
     """
     if request.POST:
-        rodzaj = get_object_or_404(OfertyRodzaj, pk = request.POST.get('rodzaj')).nazwa
+        rodzaj = get_object_or_404(OfertyRodzaj,
+                                   pk=request.POST.get('rodzaj')).nazwa
         rodzaj = slugify(rodzaj)
-        typ = get_object_or_404(OfertyTyp, pk = request.POST.get('typ')).nazwa
+        typ = get_object_or_404(OfertyTyp,
+                                pk=request.POST.get('typ')).nazwa
         typ = slugify(typ)
 
-        miasto = get_object_or_404(OfertyMiasto, pk=request.POST.get("miasto")).nazwa_flat
+        miasto = get_object_or_404(OfertyMiasto,
+                                   pk=request.POST.get("miasto")).nazwa_flat
     else:
         rodzaj = 'sprzedaz'
         typ = 'dom'
         miasto = 'Ustron'
 
     return redirect(reverse_lazy('oferty:result',
-            kwargs={'rodzaj': rodzaj,
-            'typ': typ,
-            'miasto': miasto}))
+                                 kwargs={'rodzaj': rodzaj,
+                                         'typ': typ,
+                                         'miasto': miasto}))
 
 
 def get_est_id(request):
@@ -55,20 +76,20 @@ def index(request):
     """
     Shows highlighted offers on home page
     """
-    oferty = OfertyEst.objects.filter(status = 0).select_related().order_by('id')
+    oferty = OfertyEst.objects.filter(status=0).select_related().order_by('id')
     form = OfertySearchForm()
     query = request.GET.get("est_id")
-    
+
     fpage_ids = []
 
     if query:
-        oferty = oferty.filter(pk = query)
+        oferty = oferty.filter(pk=query)
     else:
         for fpage in OfertyFpage.objects.all():
             fpage_ids.append(fpage.est_id)
-            
-        oferty = oferty.filter(pk__in = fpage_ids,
-            status = 0).order_by('id')[:9]
+
+        oferty = oferty.filter(pk__in=fpage_ids,
+                               status=0).order_by('id')[:9]
 
     return render(request, 'oferty/fpage.html',
                   {'oferty': oferty, 'form': form})
@@ -80,12 +101,11 @@ def get_from_list(objs, msg):
     return objs[0]
 
 
-
 def sprzedane(request):
     """
     List lately sold offers
     """
-    oferty = OfertyEst.objects.filter(status = 1).select_related().order_by('-id')[:50]
+    oferty = OfertyEst.objects.filter(status=1).select_related().order_by('-id')[:50]
 
     paginator = Paginator(oferty, 10)
 
@@ -101,7 +121,7 @@ def sprzedane(request):
 
     # Main offer search form
     # default: (1) sprzedaż / (1) dom / (12) Ustroń
-    form = OfertySearchForm({'rodzaj': 1, 'typ': 1, 'miasto': 12 })
+    form = OfertySearchForm({'rodzaj': 1, 'typ': 1, 'miasto': 12})
 
     return render(request, 'oferty/index.html',
                   {'oferty': oferty, 'form': form, 'sprzedane': 1})
@@ -112,7 +132,7 @@ def najnowsze(request):
     List the newest offers
     """
 
-    oferty = OfertyEst.objects.filter(status = 0).select_related().order_by('-data','-id')[:10]
+    oferty = OfertyEst.objects.filter(status=0).select_related().order_by('-data','-id')[:10]
 
     paginator = Paginator(oferty, 10)
 
@@ -128,7 +148,7 @@ def najnowsze(request):
 
     # Offer search main form
     # default: (1) sprzedaż / (1) dom / (12) Ustroń
-    form = OfertySearchForm({'rodzaj': 1, 'typ': 1, 'miasto': 12 })
+    form = OfertySearchForm({'rodzaj': 1, 'typ': 1, 'miasto': 12})
 
     return render(request, 'oferty/index.html',
                   {'oferty': oferty, 'form': form, 'najnowsze': 1})
@@ -139,20 +159,19 @@ def result(request, rodzaj, typ, miasto):
     Offers index
     """
 
-    miasto_id = get_object_or_404(OfertyMiasto, nazwa_flat = miasto).id
-    
-    rodzaj_objs = [ r for r in OfertyRodzaj.objects.all() if slugify(r.nazwa) == rodzaj ]
-    typ_objs = [ t for t in OfertyTyp.objects.all() if slugify(t.nazwa) == typ ]
+    miasto_id = get_object_or_404(OfertyMiasto, nazwa_flat=miasto).id
+    rodzaj_objs = [r for r in OfertyRodzaj.objects.all() if slugify(r.nazwa) == rodzaj]
+    typ_objs = [t for t in OfertyTyp.objects.all() if slugify(t.nazwa) == typ]
 
     rodzaj_id = get_from_list(rodzaj_objs, 'Nie ma takiego rodzaju').id
     typ_id = get_from_list(typ_objs, 'Nie ma takiego typu').id
 
-    oferty = OfertyEst.objects.filter(status = 0).select_related().order_by('-id')
+    oferty = OfertyEst.objects.filter(status=0).select_related().order_by('-id')
 
     oferty = oferty.filter(
-        Q(rodzaj = rodzaj_id),
-        Q(typ = typ_id),
-        Q(miasto = miasto_id)
+        Q(rodzaj=rodzaj_id),
+        Q(typ=typ_id),
+        Q(miasto=miasto_id)
     )
 
     paginator = Paginator(oferty, 10)
@@ -168,16 +187,17 @@ def result(request, rodzaj, typ, miasto):
         oferty = paginator.page(paginator.num_pages)
 
     # Offers main search form
-    form = OfertySearchForm({'rodzaj': rodzaj_id, 'typ': typ_id, 'miasto': miasto_id })
+    form = OfertySearchForm({'rodzaj': rodzaj_id,
+                             'typ': typ_id,
+                             'miasto': miasto_id})
 
     return render(request, 'oferty/index.html',
                   {'oferty': oferty, 'form': form})
 
 
-
 def detail(oferta_id):
     """ unused """
-    #user = request.user
+    # user = request.user
     oferta = get_object_or_404(OfertyEst, pk=oferta_id, status="0")
 
     return render(request, 'oferty/detail.html', {'oferta': oferta})
@@ -199,14 +219,15 @@ class DetailView(generic.DetailView, ContactView):
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
-        context['form'] = DetailContactForm(initial={'sender': self.kwargs['pk']})
+        context['form'] = DetailContactForm(initial={
+            'sender': self.kwargs['pk']})
         return context
 
     def post(self, request, *args, **kwargs):
-       f = DetailContactForm(request.POST)
-       if f.is_valid():
-           return ContactView.post(self, request, *args, **kwargs)
-       else:
+        f = DetailContactForm(request.POST)
+        if f.is_valid():
+            return ContactView.post(self, request, *args, **kwargs)
+        else:
             self.object = self.get_object()
             context = super(DetailView, self).get_context_data(**kwargs)
             context['form'] = f
@@ -218,14 +239,13 @@ def thankyou(request):
     email send success message
     """
 
-    form = OfertySearchForm({'rodzaj': 1, 'typ': 1, 'miasto': 12 })
+    form = OfertySearchForm({'rodzaj': 1, 'typ': 1, 'miasto': 12})
 
     return render(request, 'oferty/thankyou.html', {'form': form})
 
 
 def cristal(request):
 
-    form = OfertySearchForm({'rodzaj': 1, 'typ': 1, 'miasto': 12 })
+    form = OfertySearchForm({'rodzaj': 1, 'typ': 1, 'miasto': 12})
 
     return render(request, 'oferty/cristal.html', {'form': form})
-

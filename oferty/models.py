@@ -1,5 +1,6 @@
 from django.db import models
-from django.urls import reverse
+# from django.urls import reverse
+
 
 class OfertyNazwa(models.Model):
     nazwa = models.CharField(max_length=50)
@@ -21,7 +22,7 @@ class OfertyMiasto(models.Model):
     nazwa_otodom = models.CharField(max_length=25)
     powiat = models.CharField(max_length=25)
     nazwa_flat = models.CharField(max_length=25)
-    
+
     class Meta:
         managed = True
         db_table = 'oferty_miasto'
@@ -31,7 +32,7 @@ class OfertyMiasto(models.Model):
 
 
 class OfertyRodzaj(models.Model):
-    ''' 
+    '''
     Rodzaj transakcji: sprzedaż, wynajem
     '''
     nazwa = models.CharField(max_length=15)
@@ -226,7 +227,7 @@ class OfertyDBSsName(models.Model):
     name_pl = models.CharField(max_length=50)
     name_en = models.CharField(max_length=50)
     name_de = models.CharField(max_length=50)
-    
+
     class Meta:
         managed = True
         db_table = 'oferty_d_b_ss_name'
@@ -269,7 +270,7 @@ class OfertyDBRdtName(models.Model):
     class Meta:
         managed = True
         db_table = 'oferty_d_b_rdt_name'
-        
+
 
 class OfertyDBRtName(models.Model):
     '''
@@ -577,15 +578,18 @@ class OfertyDF(models.Model):
     Opis mieszkania
     '''
     est = models.OneToOneField('OfertyEst', on_delete=models.CASCADE)
-    buildingtype = models.ForeignKey('OfertyDFBtName', on_delete=models.CASCADE)
+    buildingtype = models.ForeignKey('OfertyDFBtName',
+                                     on_delete=models.CASCADE)
     builtyear = models.IntegerField()
-    flatownership = models.ForeignKey('OfertyDFFoName', on_delete=models.CASCADE)
+    flatownership = models.ForeignKey('OfertyDFFoName',
+                                      on_delete=models.CASCADE)
     status = models.ForeignKey('OfertyDFbSName', on_delete=models.CASCADE)
     roomnum = models.IntegerField()
     floorno = models.IntegerField()
     floornum = models.IntegerField()
     heating = models.ForeignKey('OfertyDFHName', on_delete=models.CASCADE)
-    locationtype = models.ForeignKey('OfertyDFbtLtName', on_delete=models.CASCADE)
+    locationtype = models.ForeignKey('OfertyDFbtLtName',
+                                     on_delete=models.CASCADE)
     rent = models.IntegerField()
 
     class Meta:

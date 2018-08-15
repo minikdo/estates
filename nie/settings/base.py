@@ -20,6 +20,7 @@ from django.core.exceptions import ImproperlyConfigured
 # JSON-based secrets module
 with open('nie/settings/secrets.json') as f:
     secrets = json.loads(f.read())
+
     def get_secret(setting, secrets=secrets):
         '''Get the secret variable or return explicit exception.'''
         try:
@@ -27,9 +28,6 @@ with open('nie/settings/secrets.json') as f:
         except KeyError:
             error_msg = 'Set the {0} environment variable'.format(setting)
             raise ImproperlyConfigured(error_msg)
-
-
-    
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -108,8 +106,6 @@ DATABASES = {
         'PORT': get_secret('DB_PORT'),
     }
 }
-#SECRET_KEY = get_secret('SECRET_KEY')
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -142,7 +138,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-#USE_THOUSAND_SEPARATOR = True
+# USE_THOUSAND_SEPARATOR = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
@@ -155,11 +151,11 @@ STATICFILES_DIRS = [
 
 # Admin settings
 
-ADMIN_NAME    = get_secret('ADMIN_NAME')
-ADMIN_EMAIL   = get_secret('ADMIN_EMAIL')
+ADMIN_NAME = get_secret('ADMIN_NAME')
+ADMIN_EMAIL = get_secret('ADMIN_EMAIL')
 OFFICE1_EMAIL = get_secret('OFFICE1_EMAIL')
 OFFICE2_EMAIL = get_secret('OFFICE2_EMAIL')
-SERVER_EMAIL  = get_secret('SERVER_EMAIL')
+SERVER_EMAIL = get_secret('SERVER_EMAIL')
 
 DEFAULT_FROM_EMAIL = SERVER_EMAIL
 SERVER_EMAIL = SERVER_EMAIL
@@ -184,6 +180,3 @@ ENVELOPE_EMAIL_RECIPIENTS_MAP = {1: [OFFICE1_EMAIL, ADMIN_EMAIL],
 
 HONEYPOT_FIELD_NAME = get_secret('HP_FIELDNAME')
 HONEYPOT_VALUE = get_secret('HP_VALUE')
-
-
-
