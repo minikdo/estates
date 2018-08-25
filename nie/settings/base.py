@@ -17,8 +17,13 @@ import json
 # into your settings, but ImproperlyConfigured is an exception.
 from django.core.exceptions import ImproperlyConfigured
 
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__))))
+
 # JSON-based secrets module
-with open(os.path.join(os.path.dirname(__file__), 'secrets.json')) as f:
+with open(os.path.join(BASE_DIR, 'nie', 'settings', 'secrets.json')) as f:
     secrets = json.loads(f.read())
 
     def get_secret(setting, secrets=secrets):
@@ -28,9 +33,6 @@ with open(os.path.join(os.path.dirname(__file__), 'secrets.json')) as f:
         except KeyError:
             error_msg = 'Set the {0} environment variable'.format(setting)
             raise ImproperlyConfigured(error_msg)
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -144,6 +146,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static/'),  # add STATIC_ROOT to DIRS
