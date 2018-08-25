@@ -132,7 +132,7 @@ def najnowsze(request):
     List the newest offers
     """
 
-    oferty = OfertyEst.objects.filter(status=0).select_related().order_by('-data','-id')[:10]
+    oferty = OfertyEst.objects.filter(status=0).select_related().order_by('-data', '-id')[:10]
 
     paginator = Paginator(oferty, 10)
 
@@ -195,12 +195,12 @@ def result(request, rodzaj, typ, miasto):
                   {'oferty': oferty, 'form': form})
 
 
-def detail(oferta_id):
-    """ unused """
-    # user = request.user
-    oferta = get_object_or_404(OfertyEst, pk=oferta_id, status="0")
+# def detail(oferta_id):
+    # """ unused """
+    # # user = request.user
+    # oferta = get_object_or_404(OfertyEst, pk=oferta_id, status="0")
 
-    return render(request, 'oferty/detail.html', {'oferta': oferta})
+    # return render(request, 'oferty/detail.html', {'oferta': oferta})
 
 
 class DetailView(generic.DetailView, ContactView):
