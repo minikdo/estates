@@ -22,6 +22,7 @@ class OfertyMiasto(models.Model):
     nazwa_otodom = models.CharField(max_length=25)
     powiat = models.CharField(max_length=25)
     nazwa_flat = models.CharField(max_length=25)
+    biuro = models.IntegerField(default=0)
 
     class Meta:
         managed = True
@@ -175,6 +176,7 @@ class OfertyDBBtName(models.Model):
     name_pl = models.CharField(max_length=50)
     name_en = models.CharField(max_length=50)
     name_de = models.CharField(max_length=50)
+    name_gratka = models.CharField(max_length=50, null=True)
 
     class Meta:
         managed = True
