@@ -1,7 +1,7 @@
 {% extends "oferty/base.html" %}
 {% load envelope_tags %}
 {% load crispy_forms_tags %}
-
+{% load honeypot %}
 {% block body %}
 
 
@@ -12,7 +12,7 @@
 	<h1>Formularz kontaktowy</h1>
 	<form action="{% url 'oferty:crispy-contact' %}" method="post">
 	  {% csrf_token %}
-	  {% antispam_fields %}
+          {% render_honeypot_field "numer telefonu" %}
 	  {{ form|crispy }}
 	  <button type="submit" id="send_btn" onClick='var btn = document.getElementById("send_btn");btn.className = "btn btn-lg btn-warning";btn.innerHTML = "proszę czekać";' class="btn btn-lg btn-success">Wyślij</button>
 	</form>
