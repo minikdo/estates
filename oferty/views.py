@@ -244,8 +244,8 @@ def thankyou(request):
     return render(request, 'oferty/thankyou.html', {'form': form})
 
 
-def cristal(request):
+def crystal(request):
 
     form = OfertySearchForm({'rodzaj': 1, 'typ': 1, 'miasto': 12})
 
-    return render(request, 'oferty/cristal.html', {'form': form})
+    return render(request, 'oferty/crystal.html', {'form': form})

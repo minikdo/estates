@@ -15,5 +15,5 @@ urlpatterns = [
     re_path(r'(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),
     path(r'kontakt/', views.ContactView.as_view(), name='crispy-contact'),
     path(r'dziekujemy/', views.thankyou, name='thankyou'),
-    path(r'cristal/', views.cristal, name="cristal"),
+    path(r'crystal/', views.crystal, name="crystal"),
 ]
