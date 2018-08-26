@@ -1,0 +1,7 @@
+nie/settings/secrets.json
+*__pycache__
+*.pyc
+.venv
+.envrc
+media/
+static/oferty/
