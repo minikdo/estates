@@ -24,10 +24,11 @@
 
       <div class="col-md-8">
 	{% if ofertyest.zdjecia > 0 %}
+        {% static 'oferty/pix2' as pix2 %}
 	{% for photos in ofertyest.ofertyestphoto_set.all|dictsort:"position" %}
-	<a href="{% get_static_prefix %}oferty/pix2/{{ photos.filename }}" data-toggle="lightbox" data-gallery="zdjecia-nieruchomosci-{{ oferta.pk }}">
+	<a href="{{ pix2 }}/{{ photos.filename }}" data-toggle="lightbox" data-gallery="zdjecia-nieruchomosci-{{ oferta.pk }}">
 	  {% if photos.width > photos.height and photos.thumbnail %}
-	  <img alt="" class="img-responsive" src="{% get_static_prefix %}oferty/pix2/{{ photos.filename }}" />
+	  <img alt="" class="img-responsive" src="{{ pix2 }}/{{ photos.filename }}" />
 	  {% endif %}
 	</a>
 	{% endfor %}
