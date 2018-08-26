@@ -5,6 +5,7 @@
 {% load static %}
 {% load humanize %}
 {% load math %}
+{% load honeypot %}
 {% load envelope_tags %}
 
 {% block body %}
@@ -73,7 +74,7 @@
 
 	      <form action="{% url 'oferty:detail' ofertyest.pk %}" method="post">
 		{% csrf_token %}
-		{% antispam_fields %}
+                {% render_honeypot_field "numer telefonu" %}
 		{{ form|crispy }}
 
 		<button type="submit" id="send_btn" onClick='var btn = document.getElementById("send_btn");btn.className = "btn btn-lg btn-warning";btn.innerHTML = "proszę czekać";' class="btn btn-lg btn-success">Wyślij</button>
