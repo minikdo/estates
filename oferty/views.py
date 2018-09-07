@@ -208,6 +208,7 @@ class DetailView(generic.DetailView, ContactView):
     Offer details
     """
 
+    form_class = DetailContactForm
     model = OfertyEst
     template_name = 'oferty/detail.html'
     form_invalid_message = _(u"There was an error in the contact form.")
@@ -224,14 +225,7 @@ class DetailView(generic.DetailView, ContactView):
         return context
 
     def post(self, request, *args, **kwargs):
-        f = DetailContactForm(request.POST)
-        if f.is_valid():
-            return ContactView.post(self, request, *args, **kwargs)
-        else:
-            self.object = self.get_object()
-            context = super(DetailView, self).get_context_data(**kwargs)
-            context['form'] = f
-            return self.render_to_response(context=context)
+        return ContactView.post(self, request, *args, **kwargs)
 
 
 def thankyou(request):

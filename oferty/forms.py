@@ -89,6 +89,7 @@ class DetailContactForm(ContactForm):
         self.fields['subject'].widget = forms.HiddenInput()
         self.fields['sender'].widget = forms.HiddenInput()
         self.fields['subject'].initial = 'oferta'
+        # self.fields['category'].initial = 11  # category: Others
 
         self.fields = OrderedDict(sorted(self.fields.items(),
                                          key=lambda x: keys.index(x[0])))
