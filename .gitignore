@@ -1,7 +1,9 @@
-nie/settings/secrets.json
+/nie/settings/secrets.json
 *__pycache__
 *.pyc
 .venv
 .envrc
-media/
-static/oferty/
+/media/
+/static/oferty/
+/htpasswd
+/static/robots.txt
