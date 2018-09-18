@@ -85,11 +85,11 @@ def index(request):
     if query:
         oferty = oferty.filter(pk=query)
     else:
-        for fpage in OfertyFpage.objects.all():
+        for fpage in OfertyFpage.objects.all().order_by('id'):
             fpage_ids.append(fpage.est_id)
 
         oferty = oferty.filter(pk__in=fpage_ids,
-                               status=0).order_by('id')[:9]
+                               status=0)[:9]
 
     return render(request, 'oferty/fpage.html',
                   {'oferty': oferty, 'form': form})
@@ -105,7 +105,8 @@ def sprzedane(request):
     """
     List lately sold offers
     """
-    oferty = OfertyEst.objects.filter(status=1).select_related().order_by('-id')[:50]
+    oferty = OfertyEst.objects.filter(status=1).select_related()
+    oferty = oferty.order_by('-id')[:50]
 
     paginator = Paginator(oferty, 10)
 
@@ -132,7 +133,8 @@ def najnowsze(request):
     List the newest offers
     """
 
-    oferty = OfertyEst.objects.filter(status=0).select_related().order_by('-data', '-id')[:10]
+    oferty = OfertyEst.objects.filter(status=0).select_related()
+    oferty = oferty.order_by('-data', '-id')[:10]
 
     paginator = Paginator(oferty, 10)
 
@@ -166,7 +168,8 @@ def result(request, rodzaj, typ, miasto):
     rodzaj_id = get_from_list(rodzaj_objs, 'Nie ma takiego rodzaju').id
     typ_id = get_from_list(typ_objs, 'Nie ma takiego typu').id
 
-    oferty = OfertyEst.objects.filter(status=0).select_related().order_by('-id')
+    oferty = OfertyEst.objects.filter(status=0).select_related()
+    oferty = oferty.order_by('-id')
 
     oferty = oferty.filter(
         Q(rodzaj=rodzaj_id),
@@ -193,14 +196,6 @@ def result(request, rodzaj, typ, miasto):
 
     return render(request, 'oferty/index.html',
                   {'oferty': oferty, 'form': form})
-
-
-# def detail(oferta_id):
-    # """ unused """
-    # # user = request.user
-    # oferta = get_object_or_404(OfertyEst, pk=oferta_id, status="0")
-
-    # return render(request, 'oferty/detail.html', {'oferta': oferta})
 
 
 class DetailView(generic.DetailView, ContactView):
