@@ -8,3 +8,8 @@
     git:
       repo: "{{ git_repo }}"
       dest: "{{ proj_path }}"
+
+  - name: touch wsgi.py
+    file:
+      path: '{{ proj_path }}/nie/wsgi.py'
+      state: touch
