@@ -47,21 +47,13 @@
 	      <tr>
 		<td>pośrednik</td>
 		<td>
-		  {% if ofertyest.kto == 3 or ofertyest.kto == 8 or ofertyest.kto == 12 or ofertyest.kto == 13 or ofertyest.kto == 14 %}
-		  Agnieszka Ściwiarska
-		  {% else %}
-		  Sebastian Młynarczyk
-		  {% endif %}
+                  {{ ofertyest.miasto.biuro.nazwisko }}
 		</td>
 	      </tr>
 	      <tr>
 		<td>tel.</td>
 		<td>
-		  {% if ofertyest.kto == 3 or ofertyest.kto == 8 or ofertyest.kto == 12 or ofertyest.kto == 13 or ofertyest.kto == 14 %}
-		  603 47 99 99
-		  {% else %}
-		  609 46 74 46
-		  {% endif %}
+                  {{ ofertyest.miasto.biuro.tel1 }}, {{ ofertyest.miasto.biuro.tel2 }} 
 		</td>
 	      </tr>
 	      <tr>

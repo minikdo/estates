@@ -35,6 +35,7 @@ class OfertyMiasto(models.Model):
 
 
 class OfertyBiuro(models.Model):
+    nazwisko = models.TextField(null=True)
     tel1 = models.CharField(max_length=25, null=True)
     tel2 = models.CharField(max_length=25, null=True)
     email = models.CharField(max_length=50, null=True)
