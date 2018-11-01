@@ -37,7 +37,7 @@ class OfertyMiasto(models.Model):
 class OfertyBiuro(models.Model):
     tel1 = models.CharField(max_length=25, null=True)
     tel2 = models.CharField(max_length=25, null=True)
-    email = models.CharField(max_length=25, null=True)
+    email = models.CharField(max_length=50, null=True)
 
     class Meta:
         managed = True
