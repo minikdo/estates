@@ -1,11 +1,10 @@
 /nie/settings/secrets.json
 *__pycache__
 *.pyc
-.venv
-.envrc
+/.venv
+/.envrc
 /media/
 /static/oferty/
 /htpasswd
 /static/robots.txt
 /vars.yml
-/oferty/migrations/
