@@ -22,7 +22,8 @@ class OfertyMiasto(models.Model):
     nazwa_otodom = models.CharField(max_length=25)
     powiat = models.CharField(max_length=25)
     nazwa_flat = models.CharField(max_length=25)
-    biuro = models.IntegerField(default=0)
+    # biuro = models.IntegerField(default=0)
+    biuro = models.ForeignKey('OfertyBiuro', on_delete=models.CASCADE)
 
     class Meta:
         managed = True
@@ -30,6 +31,16 @@ class OfertyMiasto(models.Model):
 
     def __str__(self):
         return self.nazwa
+
+
+class OfertyBiuro(models.Model):
+    tel1 = models.CharField(max_length=25, null=True)
+    tel2 = models.CharField(max_length=25, null=True)
+    email = models.CharField(max_length=25, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'oferty_biuro'
 
 
 class OfertyRodzaj(models.Model):
