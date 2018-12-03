@@ -91,7 +91,8 @@ class OfertyEst(models.Model):
     kto = models.IntegerField(blank=True, null=True)
     zdjecia = models.IntegerField(default='0')
     pdf = models.IntegerField(default='0', null=True, blank=True)
-
+    kto_prowadzi = models.IntegerField(blank=True, null=True)
+    
     class Meta:
         managed = True
         db_table = 'oferty_est'
@@ -610,3 +611,21 @@ class OfertyDF(models.Model):
     class Meta:
         managed = True
         db_table = 'oferty_d_f'
+
+
+class OfertyUsers(models.Model):
+    '''
+    temporary user table
+    '''
+
+    username = models.CharField(max_length=30)
+    fullname = models.CharField(max_length=30)
+    phone = models.CharField(max_length=30)
+    phone2 = models.CharField(max_length=30)
+    email = models.CharField(max_length=30)
+    email2 = models.CharField(max_length=30)
+    fullname_gen = models.CharField(max_length=30)
+    fullname_respons = models.CharField(max_length=30)
+    license = models.CharField(max_length=30)
+    license2 = models.CharField(max_length=30)
+    is_active = models.BooleanField(default=True)
