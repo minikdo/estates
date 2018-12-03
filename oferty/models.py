@@ -91,7 +91,8 @@ class OfertyEst(models.Model):
     kto = models.IntegerField(blank=True, null=True)
     zdjecia = models.IntegerField(default='0')
     pdf = models.IntegerField(default='0', null=True, blank=True)
-    kto_prowadzi = models.IntegerField(blank=True, null=True)
+    kto_prowadzi = models.ForeignKey('OfertyUsers', on_delete=models.SET_NULL,
+                                     null=True)
     
     class Meta:
         managed = True
