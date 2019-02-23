@@ -1,7 +1,6 @@
 from django.urls import re_path, path
-# from envelope.views import ContactView
 from . import views
-# from .forms import CategorizedContactForm, DetailContactForm
+
 
 urlpatterns = [
     path('', views.index, name='index'),

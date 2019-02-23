@@ -18,39 +18,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&subset=latin-ext" type="text/css" />
 
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.1.1/ekko-lightbox.css" />
     
     <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" /> 
 
-    <!-- script by jurek.tk -->
-    <script>
-      var XMLHttpRequestObject = false;
-
-      if (window.XMLHttpRequest) { XMLHttpRequestObject = new XMLHttpRequest(); } else
-      if (window.ActiveXObject) { XMLHttpRequestObject = new
-      ActiveXObject("\x4D\x69\x63\x72\x6F\x73\x6F\x66\x74\x2E\x58\x4D\x4C\x48\x54\x54\x50"); }
-
-      function getData() { var dataSource = "{% url 'oferty:index' %}" +
-      document.getElementById("get_est_id").value; if(XMLHttpRequestObject) {
-
-      XMLHttpRequestObject.open("GET", dataSource);
-
-      XMLHttpRequestObject.onreadystatechange = function() {
-      if (XMLHttpRequestObject.readyState == 4 && XMLHttpRequestObject.status == 200) {
-      location.href = dataSource;
-      } else if (XMLHttpRequestObject.readyState== 404 || XMLHttpRequestObject.status == 404) {
-                  document.getElementById("code").innerHTML = "<div class='alert alert-dismissible alert-warning' id='notfound'><button type='button' class='close' data-dismiss='alert'>&times;</button>Nieprawidłowy numer oferty</div>";
-                  }
-}
-
-XMLHttpRequestObject.send(null);
-} }
-
-</script>
-
-
-
+    <script src="{% static 'css/get_est_id.js' %}"></script>
 
   </head>
 

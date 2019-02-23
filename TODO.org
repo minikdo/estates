@@ -1,0 +1,1 @@
+- [ ] countdown timer on redirect after email send
