@@ -1,4 +1,3 @@
-from django.views import generic
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
@@ -9,8 +8,7 @@ from .models import OfertyEst, OfertyFpage, OfertyMiasto, OfertyRodzaj, \
 from django.utils.text import slugify
 from envelope.views import ContactView as EnvelopeContactView
 
-from django.views.generic import FormView, TemplateView
-
+from django.views.generic import FormView, TemplateView, DetailView
 from django.utils.translation import ugettext_lazy as _
 
 from .forms import CategorizedContactForm
@@ -197,7 +195,7 @@ def result(request, rodzaj, typ, miasto):
                   {'oferty': oferty, 'form': form})
 
 
-class DetailView(generic.DetailView, ContactView):
+class DetailView(DetailView, ContactView):
     """
     Offer details
     """
