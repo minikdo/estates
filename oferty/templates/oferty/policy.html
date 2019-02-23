@@ -1,0 +1,23 @@
+{% extends 'oferty/base.html' %}
+{% block title %}Polityka prywatności{% endblock %}
+
+{% load l10n %}
+{% load static %}
+{% load humanize %}
+{% load math %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+
+{% include 'oferty/search_form.html' %}
+
+<div class="containter-fluid" id="oferty">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12" id="policy">
+        {% include 'oferty/polityka.html' %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

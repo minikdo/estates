@@ -1,7 +1,4 @@
 from django.views import generic
-# from django import template
-# from django.views.generic.edit import CreateView, UpdateView, DeleteView
-# from django.core.urlresolvers import reverse_lazy
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
@@ -9,14 +6,16 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from .models import OfertyEst, OfertyFpage, OfertyMiasto, OfertyRodzaj, \
     OfertyTyp
-from .forms import OfertySearchForm, DetailContactForm
 from django.utils.text import slugify
 from envelope.views import ContactView as EnvelopeContactView
-from .forms import CategorizedContactForm
 
-from django.views.generic import FormView
+from django.views.generic import FormView, TemplateView
 
 from django.utils.translation import ugettext_lazy as _
+
+from .forms import CategorizedContactForm
+from .forms import OfertySearchForm, DetailContactForm
+from .mixins import SearchFormMixin
 
 
 class ContactView(EnvelopeContactView):
@@ -223,18 +222,22 @@ class DetailView(generic.DetailView, ContactView):
         return ContactView.post(self, request, *args, **kwargs)
 
 
-def thankyou(request):
+class ThankYou(SearchFormMixin, TemplateView):
     """
     email send success message
     """
 
-    form = OfertySearchForm({'rodzaj': 1, 'typ': 1, 'miasto': 12})
-
-    return render(request, 'oferty/thankyou.html', {'form': form})
+    template_name = "oferty/thankyou.html"
 
 
-def crystal(request):
+class CrystalResort(SearchFormMixin, TemplateView):
+    """ Crystal Resort"""
 
-    form = OfertySearchForm({'rodzaj': 1, 'typ': 1, 'miasto': 12})
+    template_name = "oferty/crystal.html"
 
-    return render(request, 'oferty/crystal.html', {'form': form})
+
+class PrivacyPolicy(SearchFormMixin, TemplateView):
+    """ Privacy Policy """
+
+    template_name = "oferty/policy.html"
+    

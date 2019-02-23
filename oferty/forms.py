@@ -21,9 +21,12 @@ class OfertySearchForm(forms.Form):
     typ = forms.ModelChoiceField(queryset=OfertyTyp.objects.all(),
                                  empty_label=None, label="")
 
-    miasto = forms.ModelChoiceField(OfertyMiasto.objects.filter(
-        ofertyest__status=0).annotate(num_est=Count('ofertyest')).order_by(
-            'prior', 'nazwa'), empty_label=None, label="")
+    miasto = forms.ModelChoiceField(OfertyMiasto.objects
+                                    .filter(ofertyest__status=0)
+                                    .annotate(num_est=Count('ofertyest'))
+                                    .order_by('prior', 'nazwa'),
+                                    empty_label=None,
+                                    label="")
 
 
 class CategorizedContactForm(ContactForm):
@@ -43,14 +46,11 @@ class CategorizedContactForm(ContactForm):
         Category choice will be rendered above the subject field.
         """
         super(CategorizedContactForm, self).__init__(*args, **kwargs)
-        keys = ['category', 'email', 'message', 'subject', 'sender']
         self.fields['subject'].widget = forms.HiddenInput()
         self.fields['sender'].widget = forms.HiddenInput()
         self.fields['subject'].initial = 'zapytanie'
         self.fields['sender'].initial = 'no name'
-        self.fields = OrderedDict(sorted(self.fields.items(),
-                                         key=lambda x: keys.index(x[0])))
-
+                                        
     def get_email_recipients(self):
         category = int(self.cleaned_data['category'])
         if category not in (1, 2):
@@ -76,6 +76,8 @@ class CategorizedContactForm(ContactForm):
         except (AttributeError, ValueError, KeyError):
             category = None
         return dict(self.CATEGORY_CHOICES).get(category)
+
+    field_order = ['category', 'email', 'message', 'subject', 'sender']
 
 
 class DetailContactForm(ContactForm):
