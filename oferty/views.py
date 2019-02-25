@@ -3,14 +3,14 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
-from .models import OfertyEst, OfertyFpage, OfertyMiasto, OfertyRodzaj, \
-    OfertyTyp
 from django.utils.text import slugify
 from envelope.views import ContactView as EnvelopeContactView
 
 from django.views.generic import FormView, TemplateView, DetailView
 from django.utils.translation import ugettext_lazy as _
 
+from .models import OfertyEst, OfertyFpage, OfertyMiasto, OfertyRodzaj,\
+    OfertyTyp
 from .forms import CategorizedContactForm
 from .forms import OfertySearchForm, DetailContactForm
 from .mixins import SearchFormMixin
