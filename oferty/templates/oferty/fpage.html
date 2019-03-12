@@ -16,28 +16,75 @@
     
     {% if oferty %}
 
-    <div class="row jumbotron" style="margin-top: 20px;">
-      <a href="/crystal">
-        <div class="col-sm-4">
-          <img alt="" class="img-responsive" src="{% static 'oferty/crystal/apartamenty-crystal-resort-baner-1_400px.jpg' %}" />
+    <div class="row jumbotron">
+      <div class="col-sm-6">
+        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+          <!-- Indicators -->
+          <ol class="carousel-indicators">
+            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="3"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="4"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="5"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="6"></li>
+          </ol>
+
+          <!-- Wrapper for slides -->
+          <div class="carousel-inner" role="listbox">
+            <div class="item active">
+              <img class="img-responsive" src="{% static 'oferty/crystal/002_crystal_resort_1366x711.jpg' %}" alt="...">
+            </div>
+            <div class="item">
+              <img src="{% static 'oferty/crystal/001_crystal_resort_1366x711.jpg' %}" alt="...">
+            </div>
+            <div class="item">
+              <img src="{% static 'oferty/crystal/003_crystal_resort_1366x711.jpg' %}" alt="...">
+            </div>
+            <div class="item">
+              <img src="{% static 'oferty/crystal/004_crystal_resort_1366x711.jpg' %}" alt="...">
+            </div>
+            <div class="item">
+              <img src="{% static 'oferty/crystal/005_crystal_resort_1366x711.jpg' %}" alt="...">
+            </div>
+            <div class="item">
+              <img src="{% static 'oferty/crystal/006_crystal_resort_1366x711.jpg' %}" alt="...">
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+
         </div>
-        <div class="col-sm-4">
-          <h3>Apartamenty Crystal Resort</h3>
-          <ul style="list-style-type: disc;">
-            <li>system condo</li>
-            <li>wysoki standard wykończenia</li>
-            <li>aquapark i centrum konferencyjne</li>
-            <li>sauna, siłownia, spa</li>
-            <li>panorama na dolinę Wisły</li>
-            <li><b>*** Kupujący nie płaci prowizji ***</b></li>
-          </ul>
-          <div style="color: orange; margin-top: 7px; float: right;"><span class="glyphicon glyphicon-arrow-right"></span> klinknij, aby poznać szczególy</div>
-        </div>
-        <div class="col-sm-4">
-          <img alt="" class="img-responsive" src="{% static 'oferty/crystal/apartamenty-crystal-resort-baner-2_400px.jpg' %}" />
-        </div>
-      </a>
+      </div>
+      <div class="col-sm-6">
+        <h2>Apartamenty Crystal Resort</h2>
+        <p>system condo <strong>|</strong>
+          wysoki standard wykończenia <strong>|</strong>
+          aquapark i centrum konferencyjne <strong>|</strong>
+          sauna, siłownia, spa <strong>|</strong>
+          panorama na dolinę Wisły <strong>|</strong>
+          Kupujący nie płaci prowizji</p>
+        <a class="pull-right" href="/crystal"><span class="glyphicon glyphicon-arrow-right"></span> klinknij, aby poznać szczególy</a>
+      </div>
     </div>
+
+
+    
+    <script>
+      $('.carousel').carousel({
+      interval: 500
+      })
+    </script>
+    
+    
     
     <div class="row"> <!-- row  -->
       
