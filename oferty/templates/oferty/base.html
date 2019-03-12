@@ -72,13 +72,10 @@
     <p id="code">
 
     
-    <!-- block oferty -->
-    {% block body %}{% endblock %}
-
-	
-
-
-	
+      <!-- block oferty -->
+      {% block body %}{% endblock %}
+      
+      
 </div> <!-- end container -->
 </div> <!-- end container-fluid -->
 
@@ -136,11 +133,15 @@
       }
     </script>
 
+    <!-- crystal resort -->
+    <script>
+      $('.carousel').carousel({
+      interval: 2000
+      })
+    </script>
+
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ekko-lightbox/5.1.1/ekko-lightbox.js"></script>
     <script type="text/javascript" src="{% static 'css/ekko.js' %}"></script>
-
-
     
-
-  </body>
+</body>
 </html>
