@@ -1,0 +1,123 @@
+\documentclass[polish,a4wide,10pt]{article}{% load tex_tools %}{% autoescape off %}
+\usepackage{a4wide}
+\usepackage{longtable}
+
+\setlength\parskip{\medskipamount}
+\setlength\parindent{0pt}
+\setlength{\LTpre}{3pt}
+
+%%\usepackage{geometry}
+%%\geometry{verbose,landscape,a4paper,tmargin=5mm,bmargin=5mm,lmargin=10mm,rmargin=5mm,headheight=5mm,headsep=5mm,footskip=5mm}
+
+\addtolength{\voffset}{-22mm}
+\addtolength{\topmargin}{-20pt}
+\addtolength{\marginparwidth}{-50pt}
+\addtolength{\textheight}{+40mm}
+\addtolength{\footskip}{-15pt}
+\pagestyle{empty}
+
+
+\newsavebox{\Invoice}
+\savebox{\Invoice}{%
+\begin{minipage}{\textwidth}
+
+\begin{minipage}[t]{73mm}
+
+\begin{centering}
+{\Huge Faktura VAT} 
+{\Large } \par
+numer {{ invoice.number|texify }} \par
+oryginał/kopia\par
+
+\end{centering}
+\end{minipage}
+\begin{minipage}[t]{73mm}
+
+\begin{tabular}{p{45mm}p{24mm}}
+Miejscowość: & \textsf{ {{ invoice.get_issue_place_display|texify }} } \\
+Data sprzedaży: & \textsf{ {{ invoice.transaction|texify }} } \\
+Data wystawienia: & \textsf{ {{ invoice.issued|texify }} } \\
+Termin płatności: & \textsf{ {{ invoice.due|texify }} } \\
+Sposób zapłaty: & \textsf{ {{ invoice.get_payment_display|texify }} } \\
+
+\end{tabular}
+\end{minipage}
+
+\vspace{3mm}
+\begin{tabular}{p{71.4mm}p{58.4mm}}
+\textbf{Sprzedawca} & \textbf{Nabywca} \\
+\rule{0pt}{3ex}F.H. Domino, Henryk Szmek & {{ invoice.customer.company|default_if_none:invoice.customer.name|texify }} \\
+ul. 1 Maja 60, 43--460 Wisła &  {% if invoice.customer.company %} {{ invoice.customer.name|default_if_none:''|texify }} {% endif  %} \\
+NIP 548--005--59--88 & {% if invoice.customer.street %} ul. {{ invoice.customer.street|texify }} {% endif %} \\
+Nr rach.: \mbox{94 1050 1096 1000 0001 0109 3797} & {{ invoice.customer.postal_code|default_if_none:''|texify }} {{ invoice.customer.city|default_if_none:''|texify }} \\
+ING o/Ustroń & {{ invoice.customer.tax_id|default_if_none:''|texify }} \\
+
+\end{tabular}
+
+\vspace{3mm}
+
+{% if items %}
+  \begin{longtable}[l]{|p{4cm}|r|r|r|r|r|r|r|}
+    \hline
+    \rule{0pt}{2ex}Nazwa towaru & Ilość & Cena netto & Wartość netto & VAT & Kwota VAT & Wartość brutto \\
+    \hline
+    {% for item in items %}
+    {{ item.make.name_print|capfirst|texify }} &
+    \makebox{\textsf{ {{ item.qty|floatformat|texify }} szt.}} &
+    \makebox{\textsf{ {{ item.net_price|floatformat:2|texify }} zł}} &
+    \makebox{\textsf{ {{ item.net_total|floatformat:2|texify }} zł}} &
+    \makebox{\textsf{ {{ item.vat|floatformat|texify }} \%}} &
+    \makebox{\textsf{ {{ item.tax|floatformat:2|texify }} zł}} &
+    \makebox{\textsf{ {{ item.total_price|floatformat:2|texify }} zł}} \\
+    \hline
+    {% endfor %}
+\end{longtable}
+
+\begin{minipage}[t]{0.5\textwidth}
+\begin{longtable}{rl}
+  Razem netto: &  \textsf{ {{ total.net_sum|floatformat:2|texify }} zł}\\
+  Razem do zapłaty: & \textsf{\textbf{ {{ total.sum|floatformat:2|texify }} }zł}\\
+\end{longtable}
+\end{minipage}
+\begin{minipage}[t]{0.5\textwidth}
+\begin{longtable}{rl}
+  {% for vat in vats %}
+  Razem VAT {{ vat.vat|floatformat|texify }}\%: & \textsf{ {{ vat.sum_vat|floatformat:2|texify }} zł}\\
+  {% endfor %}
+\end{longtable}
+{% endif %}
+\end{minipage}
+
+\begin{longtable}{rl}
+  Słownie: & \textsf{ {{ total_words|texify }} złotych}\\
+\end{longtable}
+
+\vspace{10mm}
+
+\begin{minipage}[t]{0.50\columnwidth}
+{\centering \makebox[55mm][l]{\dotfill{}}\\
+Imię, nazwisko i podpis osoby uprawnionej \\
+do otrzymania faktury VAT \par}
+
+\end{minipage}
+\hfill{}
+\begin{minipage}[t]{0.50\columnwidth}
+{\centering \makebox[55mm][l]{\dotfill{}\textsf{ {{ invoice.created_by.first_name|texify }} {{ invoice.created_by.last_name|texify }} }\dotfill{}} \\
+Imię, nazwisko i podpis osoby uprawnionej \\
+do wystawienia faktury VAT \par}
+
+\end{minipage}
+
+\end{minipage}
+}% \Invoice
+
+\begin{document}
+
+\usebox{\Invoice}
+
+\vspace{2cm}
+
+\usebox{\Invoice}
+
+\end{document}
+{% endautoescape %}
