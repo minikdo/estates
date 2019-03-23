@@ -32,9 +32,7 @@
 	  {% endif %}
 	</a>
 	{% endfor %}
-	{% if ofertyest.pdf == 1 %}
-	<p><a href="{% get_static_prefix %}oferty/pdfy/{{ ofertyest.pk }}.pdf"><span class="glyphicon glyphicon-file" style="font-size: 2em; padding-top: 10px;"></span>pdf</a></p>
-	{% endif %}
+	<p><a href="{% url 'oferty:detail-pdf' ofertyest.pk %}"><span class="glyphicon glyphicon-file" style="font-size: 2em; padding-top: 10px;"></span>pdf</a></p>
 	{% endif %}
       </div>
       <div class="col-md-4">

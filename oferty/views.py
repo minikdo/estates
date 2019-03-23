@@ -243,7 +243,7 @@ class PrivacyPolicy(SearchFormMixin, TemplateView):
     
 
 def detail_pdf(request, **kwargs):
-    """ Generate offer details pdf """
+    """ Render a pdf with offer details """
 
     pk = kwargs['pk']
         

@@ -1,1 +1,3 @@
 - [ ] countdown timer on redirect after email send
+- [ ] 404 handler
+- [ ] tex_home writting bits
