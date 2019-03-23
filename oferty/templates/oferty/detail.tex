@@ -4,7 +4,7 @@
 \usepackage{longtable}
 \usepackage{underscore}
 \usepackage{graphicx}
-\graphicspath{ {/home/domino/pics/pix2/} }
+\graphicspath{ {% templatetag openbrace %}{{graphicspath|texify }}} }
 \usepackage[export]{adjustbox}  % to align the photo
 \usepackage{geometry}
 \geometry{verbose,a4paper,tmargin=12mm,bmargin=5mm,lmargin=15mm,rmargin=15mm,headheight=5mm,headsep=5mm,footskip=5mm}

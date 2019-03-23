@@ -5,3 +5,5 @@ DEBUG = True
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 INSTALLED_APPS += ['django_extensions'] # noqa
+
+LATEX_GRAPHICSPATH = '/home/domino/pics/pix2/'

@@ -12,7 +12,7 @@ from envelope.views import ContactView as EnvelopeContactView
 from djatex import render_latex
 
 from .models import OfertyEst, OfertyFpage, OfertyMiasto, OfertyRodzaj,\
-    OfertyTyp, OfertyOpisb, OfertyOpism
+    OfertyTyp, OfertyEstPhoto
 from .forms import CategorizedContactForm
 from .forms import OfertySearchForm, DetailContactForm
 from .mixins import SearchFormMixin
@@ -246,15 +246,20 @@ def detail_pdf(request, **kwargs):
     """ Generate offer details pdf """
 
     pk = kwargs['pk']
+        
+    oferta = get_object_or_404(OfertyEst, Q(status=0), pk=pk)
     
-    oferta = OfertyEst.objects.filter(status=0).get(pk=pk)
-
-    photo = oferta.ofertyestphoto_set.get(thumbnail=True).filename
-    photo = photo.replace('_', '\\string_')
+    try:
+        photo = oferta.ofertyestphoto_set.get(thumbnail=True).filename
+    except OfertyEstPhoto.DoesNotExist:
+        photo = ''
+    else:
+        photo = photo.replace('_', '\\string_')
     
     filename = "domino_oferta_{}.pdf".format(pk)
 
-    context = {'oferta': oferta, 'photo': photo}
+    context = {'oferta': oferta, 'photo': photo,
+               'graphicspath': settings.LATEX_GRAPHICSPATH}
     
     return render_latex(request, filename, 'oferty/detail.tex',
                         error_template_name='oferty/error.html',

@@ -8,3 +8,5 @@ ALLOWED_HOSTS += [  # noqa F405
     'domino.nieruchomosci.pl',
     'www.domino.nieruchomosci.pl',
 ]
+
+LATEX_GRAPHICSPATH = '/home/domino/sites/pix2/'
