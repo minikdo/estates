@@ -34,7 +34,7 @@ class OfertyMiasto(models.Model):
         return self.nazwa
 
 
-class OfertyBiuro(models.Model):
+class OfertyBiuro(models.Model):  # FIXME: to delete
     nazwisko = models.TextField(null=True)
     tel1 = models.CharField(max_length=25, null=True)
     tel2 = models.CharField(max_length=25, null=True)
@@ -94,6 +94,13 @@ class OfertyEst(models.Model):
     kto_prowadzi = models.ForeignKey('OfertyUsers', on_delete=models.SET_NULL,
                                      null=True)
     
+    @property
+    def jednostka(self):
+        if self.metr:
+            return "zł za metr"
+        else:
+            return "zł"
+
     class Meta:
         managed = True
         db_table = 'oferty_est'
@@ -128,60 +135,93 @@ class OfertyOpisb(models.Model):
     Opis budynku
     '''
     est = models.OneToOneField(
-        'OfertyEst', on_delete=models.CASCADE, null=True)
-    rok_bud = models.CharField(max_length=350, blank=True, null=True)
+        'OfertyEst', on_delete=models.CASCADE, null=True,
+        verbose_name="numer oferty")
+    rok_bud = models.CharField(max_length=350, blank=True, null=True,
+                               verbose_name="rok budowy")
     budulec = models.CharField(max_length=350, blank=True, null=True)
-    stan = models.CharField(max_length=300, blank=True, null=True)
+    stan = models.CharField(max_length=300, blank=True, null=True,
+                            verbose_name="stan techniczny")
     dach = models.CharField(max_length=350, blank=True, null=True)
     poddasze = models.CharField(max_length=300, blank=True, null=True)
     piwnica = models.CharField(max_length=300, blank=True, null=True)
-    ogrzew = models.CharField(max_length=300, blank=True, null=True)
-    garaz = models.CharField(max_length=350, blank=True, null=True)
-    ogrodz = models.CharField(max_length=350, blank=True, null=True)
+    ogrzew = models.CharField(max_length=300, blank=True, null=True,
+                              verbose_name="ogrzewanie")
+    garaz = models.CharField(max_length=350, blank=True, null=True,
+                             verbose_name="garaż")
+    ogrodz = models.CharField(max_length=350, blank=True, null=True,
+                              verbose_name="ogrodzenie")
     otoczenie = models.CharField(max_length=300, blank=True, null=True)
-    pow = models.IntegerField(blank=True, null=True)
+    pow = models.IntegerField(blank=True, null=True,
+                              verbose_name="powierzchnia budynku")
     parter = models.CharField(max_length=350, blank=True, null=True)
-    ip = models.CharField(max_length=350, blank=True, null=True)
+    ip = models.CharField(max_length=350, blank=True, null=True,
+                          verbose_name="piętro")
     stropy = models.CharField(max_length=350, blank=True, null=True)
     elewacja = models.CharField(max_length=350, blank=True, null=True)
     okna = models.CharField(max_length=350, blank=True, null=True)
     drzwi = models.CharField(max_length=350, blank=True, null=True)
-    podlogi = models.CharField(max_length=350, blank=True, null=True)
-    sciany = models.CharField(max_length=350, blank=True, null=True)
+    podlogi = models.CharField(max_length=350, blank=True, null=True,
+                               verbose_name="podłogi")
+    sciany = models.CharField(max_length=350, blank=True, null=True,
+                              verbose_name="ściany")
     gaz = models.CharField(max_length=350, blank=True, null=True)
     woda = models.CharField(max_length=350, blank=True, null=True)
-    kan = models.CharField(max_length=350, blank=True, null=True)
+    kan = models.CharField(max_length=350, blank=True, null=True,
+                           verbose_name="kanalizacja")
 
     class Meta:
         managed = True
         db_table = 'oferty_opisb'
 
+    def __iter__(self):
+        for field in self._meta.fields:
+            if field.name not in ['est_id', 'id']:
+                yield (field.verbose_name, field.value_to_string(self))
+        
 
 class OfertyOpism(models.Model):
     '''
     Opis mieszkań i lokali handlowych chyba
     '''
     est = models.OneToOneField(
-        'OfertyEst', on_delete=models.CASCADE, null=True)
-    pietro = models.IntegerField(blank=True, null=True)
-    il_pie = models.IntegerField(blank=True, null=True)
-    stan = models.CharField(max_length=150, blank=True, null=True)
-    il_pok = models.IntegerField(blank=True, null=True)
-    wc = models.NullBooleanField()
-    wyp = models.CharField(max_length=300, blank=True, null=True)
-    wyp_dod = models.CharField(max_length=300, blank=True, null=True)
+        'OfertyEst', on_delete=models.CASCADE, null=True,
+        verbose_name="numer oferty")
+    pietro = models.IntegerField(blank=True, null=True,
+                                 verbose_name="piętro")
+    il_pie = models.IntegerField(blank=True, null=True,
+                                 verbose_name="ilość pięter w budynku")
+    stan = models.CharField(max_length=150, blank=True, null=True,
+                            verbose_name="stan techniczny")
+    il_pok = models.IntegerField(blank=True, null=True,
+                                 verbose_name="ilość pokoi")
+    wc = models.NullBooleanField(verbose_name="osobne wc")
+    wyp = models.CharField(max_length=300, blank=True, null=True,
+                           verbose_name="wyposażenie w cenie")
+    wyp_dod = models.CharField(max_length=300, blank=True, null=True,
+                               verbose_name="wyposażenie dodatkowe")
     okna = models.CharField(max_length=150, blank=True, null=True)
-    sciany = models.CharField(max_length=150, blank=True, null=True)
-    podlogi = models.CharField(max_length=150, blank=True, null=True)
+    sciany = models.CharField(max_length=150, blank=True, null=True,
+                              verbose_name="ściany")
+    podlogi = models.CharField(max_length=150, blank=True, null=True,
+                               verbose_name="podłogi")
     balkon = models.CharField(max_length=150, blank=True, null=True)
-    garaz = models.CharField(max_length=150, blank=True, null=True)
-    lok = models.CharField(max_length=150, blank=True, null=True)
-    ogrz = models.CharField(max_length=150, blank=True, null=True)
+    garaz = models.CharField(max_length=150, blank=True, null=True,
+                             verbose_name="garaż")
+    lok = models.CharField(max_length=150, blank=True, null=True,
+                           verbose_name="lokalizacja")
+    ogrz = models.CharField(max_length=150, blank=True, null=True,
+                            verbose_name="ogrzewanie")
     czynsz = models.CharField(max_length=150, blank=True, null=True)
 
     class Meta:
         managed = True
         db_table = 'oferty_opism'
+
+    def __iter__(self):
+        for field in self._meta.fields:
+            if field.name not in ['est_id', 'id']:
+                yield (field.verbose_name, field.value_to_string(self))
 
 
 class OfertyDBBtName(models.Model):
