@@ -90,7 +90,6 @@ class OfertyEst(models.Model):
     stan = models.NullBooleanField()
     kto = models.IntegerField(blank=True, null=True)
     zdjecia = models.IntegerField(default='0')
-    pdf = models.IntegerField(default='0', null=True, blank=True)
     kto_prowadzi = models.ForeignKey('OfertyUsers', on_delete=models.SET_NULL,
                                      null=True)
     
