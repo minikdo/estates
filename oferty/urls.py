@@ -17,4 +17,5 @@ urlpatterns = [
     path('polityka-prywatnosci/', views.PrivacyPolicy.as_view(),
          name='policy'),
     path('crystal/', views.CrystalResort.as_view(), name="crystal"),
+    path('<int:pk>/pdf/', views.detail_pdf, name='detail-pdf'),
 ]

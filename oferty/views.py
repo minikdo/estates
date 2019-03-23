@@ -4,13 +4,15 @@ from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from django.utils.text import slugify
-from envelope.views import ContactView as EnvelopeContactView
-
 from django.views.generic import FormView, TemplateView, DetailView
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
+
+from envelope.views import ContactView as EnvelopeContactView
+from djatex import render_latex
 
 from .models import OfertyEst, OfertyFpage, OfertyMiasto, OfertyRodzaj,\
-    OfertyTyp
+    OfertyTyp, OfertyOpisb, OfertyOpism
 from .forms import CategorizedContactForm
 from .forms import OfertySearchForm, DetailContactForm
 from .mixins import SearchFormMixin
@@ -239,3 +241,23 @@ class PrivacyPolicy(SearchFormMixin, TemplateView):
 
     template_name = "oferty/policy.html"
     
+
+def detail_pdf(request, **kwargs):
+    """ Generate offer details pdf """
+
+    pk = kwargs['pk']
+    
+    oferta = OfertyEst.objects.filter(status=0).get(pk=pk)
+
+    photo = oferta.ofertyestphoto_set.get(thumbnail=True).filename
+    photo = photo.replace('_', '\\string_')
+    
+    filename = "domino_oferta_{}.pdf".format(pk)
+
+    context = {'oferta': oferta, 'photo': photo}
+    
+    return render_latex(request, filename, 'oferty/detail.tex',
+                        error_template_name='oferty/error.html',
+                        home_dir=settings.TEX_HOME,
+                        # build_dir=settings.TEX_HOME,
+                        context=context)
