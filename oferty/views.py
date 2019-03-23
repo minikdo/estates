@@ -254,6 +254,7 @@ def detail_pdf(request, **kwargs):
     except OfertyEstPhoto.DoesNotExist:
         photo = ''
     else:
+        # escape underscore for xelatex
         photo = photo.replace('_', '\\string_')
     
     filename = "domino_oferta_{}.pdf".format(pk)

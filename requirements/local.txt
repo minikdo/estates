@@ -1,2 +1,5 @@
 -r base.txt # includes the base.txt requirements file
 
+django-debug-toolbar
+django-extensions
+
