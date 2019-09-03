@@ -240,15 +240,15 @@ class PrivacyPolicy(SearchFormMixin, TemplateView):
     """ Privacy Policy """
 
     template_name = "oferty/policy.html"
-    
+
 
 def detail_pdf(request, **kwargs):
     """ Render a pdf with offer details """
 
     pk = kwargs['pk']
-        
+
     oferta = get_object_or_404(OfertyEst, Q(status=0), pk=pk)
-    
+
     try:
         photo = oferta.ofertyestphoto_set.get(thumbnail=True).filename
     except OfertyEstPhoto.DoesNotExist:
@@ -256,7 +256,7 @@ def detail_pdf(request, **kwargs):
     else:
         # escape underscore for xelatex
         photo = photo.replace('_', '\\string_')
-    
+
     filename = "domino_oferta_{}.pdf".format(pk)
 
     context = {'oferta': oferta, 'photo': photo,
