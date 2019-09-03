@@ -67,7 +67,7 @@
 
   {% if oferta.typ.pk == 2 or oferta.typ.pk == 4 %}
   {% for f,v in oferta.ofertyopism %}
-    {{ f|texify }} \dotfill & {{ v|texify  }} \\
+    {{ f|texify }} \dotfill & {% if v == 'True' %}jest{% elif v == 'False' %}brak{% else %}{{ v|texify  }}{% endif %} \\
   {% endfor %}
   {% endif %}
       
