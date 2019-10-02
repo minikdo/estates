@@ -92,7 +92,8 @@ class OfertyEst(models.Model):
     zdjecia = models.IntegerField(default='0')
     kto_prowadzi = models.ForeignKey('OfertyUsers', on_delete=models.SET_NULL,
                                      null=True)
-    
+    data_sprz = models.DateField(blank=True, null=True)
+
     @property
     def jednostka(self):
         if self.metr:
