@@ -104,8 +104,9 @@ def sprzedane(request):
     """
     List lately sold offers
     """
-    oferty = OfertyEst.objects.filter(status=1).select_related()
-    oferty = oferty.order_by('-id')[:50]
+    oferty = OfertyEst.objects.filter(status=1)
+    oferty = oferty.exclude(data_sprz__isnull=True).select_related()
+    oferty = oferty.order_by('-data_sprz')[:50]
 
     paginator = Paginator(oferty, 10)
 
