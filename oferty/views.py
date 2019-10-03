@@ -41,7 +41,7 @@ def post_data(request):
             rodzaj = int(request.POST.get('rodzaj'))
             typ = int(request.POST.get('typ'))
             miasto = int(request.POST.get("miasto"))
-        except ValueError:
+        except (ValueError, TypeError):
             return HttpResponse(status=400)
 
         # any(not isinstance(x, (int, float)) for x in [a,b,c,d])
@@ -74,7 +74,7 @@ def get_est_id(request):
     if request.GET:
         try:
             eid = int(request.GET.get("est_id"))
-        except ValueError:
+        except (ValueError, TypeError):
             raise Http404()
         est_id = get_object_or_404(OfertyEst, pk=eid).pk
 
