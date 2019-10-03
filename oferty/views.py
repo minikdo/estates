@@ -1,4 +1,5 @@
 from django.urls import reverse_lazy
+from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
@@ -36,15 +37,24 @@ def post_data(request):
     Slugify offer search
     """
     if request.POST:
-        rodzaj = get_object_or_404(OfertyRodzaj,
-                                   pk=request.POST.get('rodzaj')).nazwa
-        rodzaj = slugify(rodzaj)
-        typ = get_object_or_404(OfertyTyp,
-                                pk=request.POST.get('typ')).nazwa
-        typ = slugify(typ)
+        try:
+            rodzaj = int(request.POST.get('rodzaj'))
+            typ = int(request.POST.get('typ'))
+            miasto = int(request.POST.get("miasto"))
+        except ValueError:
+            return HttpResponse(status=400)
 
-        miasto = get_object_or_404(OfertyMiasto,
-                                   pk=request.POST.get("miasto")).nazwa_flat
+        # any(not isinstance(x, (int, float)) for x in [a,b,c,d])
+        # if any(not isinstance(var, int) for var in [rodzaj,
+                                                    # typ,
+                                                    # miasto]):
+            # return HttpResponse(status=400)
+
+        rodzaj = get_object_or_404(OfertyRodzaj, pk=rodzaj).nazwa
+        rodzaj = slugify(rodzaj)
+        typ = get_object_or_404(OfertyTyp, pk=typ).nazwa
+        typ = slugify(typ)
+        miasto = get_object_or_404(OfertyMiasto, pk=miasto).nazwa_flat
     else:
         rodzaj = 'sprzedaz'
         typ = 'dom'
