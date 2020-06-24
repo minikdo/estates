@@ -241,12 +241,6 @@ class ThankYou(SearchFormMixin, TemplateView):
     template_name = "oferty/thankyou.html"
 
 
-class CrystalResort(SearchFormMixin, TemplateView):
-    """ Crystal Resort"""
-
-    template_name = "oferty/crystal.html"
-
-
 class PrivacyPolicy(SearchFormMixin, TemplateView):
     """ Privacy Policy """
 
