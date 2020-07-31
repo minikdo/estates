@@ -31,6 +31,8 @@ class OfertySearchForm(forms.Form):
 
 class CategorizedContactForm(ContactForm):
 
+    template_name = "envelope/email_body.txt"
+
     CATEGORY_CHOICES = (
         ('', _("Choose")),
         (1, _("Oferty: Ustroń, Brenna, Górki, Skoczów")),
@@ -50,7 +52,7 @@ class CategorizedContactForm(ContactForm):
         self.fields['sender'].widget = forms.HiddenInput()
         self.fields['subject'].initial = 'zapytanie'
         self.fields['sender'].initial = 'no name'
-                                        
+
     def get_email_recipients(self):
         category = int(self.cleaned_data['category'])
         if category not in (1, 2):
