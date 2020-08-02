@@ -180,8 +180,16 @@
                     <div class="row">
                         <div class="col-12 text-right" style="margin-top: 3em; margin-bottom: 3em">
                             <a id="get_link">pobierz link</a>
-                            <span id="result"></span>
-                            <input type="submit" id="offersubmit" name="submit" value="dodaj" class="btn btn-default">
+
+                            {% if request.path == '/oferty/schowek/' %}
+                                <input type="submit" id="offerdelete" name="submit" value="usuń" class="btn btn-danger">
+                            {% else %}
+                                <input type="submit" id="offersubmit" name="submit" value="dodaj do schowka" class="btn btn-success">
+                                {% if request.session.offer %}
+                                    <a href="{% url 'oferty:clipboard' %}" class="btn btn-primary">schowek</a>
+                                {% endif %}
+                            {% endif %}
+
                         </div>
                     </div>
 
@@ -218,8 +226,32 @@
                  'offer': offer,
              },
              dataType: 'json',
-             success: function() {
-                 $("#result").html("dodane");
+             success: function(response) {
+                 var count = response['count'];
+                 $("#offersubmit").val("dodane (" + count + ")");
+             },
+         });
+     });
+
+     $("#offerdelete").click(function (e) {
+         e.preventDefault();
+
+         var offer = new Array();
+
+         $("input[name='offer']:checked").each(function(i) {
+             offer.push($(this).val());
+         });
+
+         $.ajax({
+             url: "{% url 'oferty:delete' %}",
+             type: "POST",
+             data: {
+                 'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val(),
+                 'offer': offer,
+             },
+             dataType: 'json',
+             success: function(response) {
+                 location.reload();
              },
          });
      });
@@ -239,10 +271,10 @@
                  var len = link.length;
                  var link = "<input type='text' disables value=" + link + " SIZE=" + len + ">";
                  var offers = "<p style='color:grey;padding:2em'>Oferty: " + response['offers'] + "</p>";
-                 
+
                  $(".modal-body").html(link + offers);
                  $('#myModal').modal('show');
-                 
+
                  /* $("#result").html(link); */
              },
              error: function() {

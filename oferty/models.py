@@ -673,10 +673,10 @@ class OfertyUsers(models.Model):
     is_active = models.BooleanField(default=True)
 
 
-class CustomOffer(models.Model):
+class Clipboard(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     token = models.CharField(max_length=16)
     ip = models.GenericIPAddressField(null=True)
     offer_list = models.CharField(validators=[int_list_validator],
-                                  max_length=100,
+                                  max_length=150,
                                   unique=True)

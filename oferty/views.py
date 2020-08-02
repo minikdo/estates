@@ -16,7 +16,7 @@ from envelope.views import ContactView as EnvelopeContactView
 from djatex import render_latex
 
 from .models import (OfertyEst, OfertyFpage, OfertyMiasto, OfertyRodzaj,
-                     OfertyTyp, OfertyEstPhoto, CustomOffer)
+                     OfertyTyp, OfertyEstPhoto, Clipboard)
 from .forms import CategorizedContactForm
 from .forms import OfertySearchForm, DetailContactForm
 from .mixins import SearchFormMixin
@@ -113,7 +113,7 @@ def get_from_list(objs, msg):
     return objs[0]
 
 
-def customlist(request):
+def clipboard(request):
 
     oferty = OfertyEst.objects.filter(
         Q(pk__in=request.session['offer']),
@@ -143,7 +143,7 @@ def link(request, token):
 
     from json import loads
 
-    offer_list = CustomOffer.objects.get(token=token).offer_list
+    offer_list = Clipboard.objects.get(token=token).offer_list
 
     offer_list = loads(offer_list)
 
@@ -335,17 +335,18 @@ def detail_pdf(request, **kwargs):
                         context=context)
 
 
-class CustomOfferAdd(View):
+class ClipboardAdd(View):
     def post(self, request):
 
         # import pdb; pdb.set_trace()
 
         post_list = request.POST.getlist('offer[]', None)
 
-        if hasattr(self.request.session, 'offer'):
-            self.request.session['offer'] = []
+        if 'offer' in self.request.session:
+            res = self.request.session['offer']
+        else:
+            res = []
 
-        res = self.request.session['offer']
         if len(post_list) > 0 and len(post_list) < 25:
             for x in post_list:
                 try:
@@ -355,12 +356,34 @@ class CustomOfferAdd(View):
                 else:
                     if x not in res:
                         res.append(x)
+        else:
+            return JsonResponse({'response': 'brak danych POST'}, status=404)
 
         res.sort()
         self.request.session['offer'] = res
+        count = len(res)
 
         print(self.request.session['offer'])
-        return JsonResponse({}, status=201)
+        return JsonResponse({'count': count}, status=201)
+
+
+class ClipboardDelete(View):
+    def post(self, request):
+        # FIXME: validate list
+        list = request.POST.getlist('offer[]', None)
+        res = self.request.session['offer']
+
+        for x in list:
+            try:
+                x = int(x)
+            except ValueError:
+                pass
+            else:
+                if x in res:
+                    res.remove(x)
+
+        self.request.session['offer'] = res
+        return JsonResponse({}, status=200)
 
 
 class GetLink(View):
@@ -377,15 +400,15 @@ class GetLink(View):
             return JsonResponse({'link': 'brak danych'}, status=404)
 
         try:
-            customoffer = CustomOffer.objects.get(offer_list=offers)
-        except CustomOffer.DoesNotExist:
-            CustomOffer.objects.create(
+            clipboard = Clipboard.objects.get(offer_list=offers)
+        except Clipboard.DoesNotExist:
+            Clipboard.objects.create(
                 token=token,
                 ip=request.META.get('REMOTE_ADDR'),
                 offer_list=offers,
             )
         else:
-            token = customoffer.token
+            token = clipboard.token
 
         link = reverse('oferty:link', kwargs={'token': token})
         return JsonResponse({'link': link, 'offers': offers}, status=200)
