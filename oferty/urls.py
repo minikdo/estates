@@ -20,6 +20,7 @@ urlpatterns = [
     path('<int:pk>/pdf/', views.detail_pdf, name='detail-pdf'),
     path('add/', views.ClipboardAdd.as_view(), name='add'),
     path('delete/', views.ClipboardDelete.as_view(), name='delete'),
+    path('delete_all/', views.ClipboardDeleteAll.as_view(), name='delete_all'),
     path('schowek/', views.clipboard, name='clipboard'),
     path('link/<str:token>/', views.link, name='link'),
     path('get_link/', views.GetLink.as_view(), name='get_link'),

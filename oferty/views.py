@@ -386,6 +386,12 @@ class ClipboardDelete(View):
         return JsonResponse({}, status=200)
 
 
+class ClipboardDeleteAll(View):
+    def get(self, request):
+        self.request.session['offer'] = []
+        return redirect(reverse('oferty:index'))
+
+
 class GetLink(View):
     def post(self, request):
 

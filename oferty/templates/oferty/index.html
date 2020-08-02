@@ -183,6 +183,7 @@
 
                             {% if request.path == '/oferty/schowek/' %}
                                 <input type="submit" id="offerdelete" name="submit" value="usuń" class="btn btn-danger">
+                                <a href="{% url 'oferty:delete_all' %}" class="text-danger">usuń schowek</a>
                             {% else %}
                                 <input type="submit" id="offersubmit" name="submit" value="dodaj do schowka" class="btn btn-success">
                                 {% if request.session.offer %}
