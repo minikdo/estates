@@ -10,6 +10,27 @@
 
     {% include 'oferty/search_form.html' %}
 
+    <!-- Default bootstrap modal example -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Schowek</h4>
+                </div>
+                <div class="modal-body" style="background-color:white; padding:1em">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Zamknij</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
     <div class="containter-fluid" id="oferty">
         <div class="container">
 
@@ -217,9 +238,19 @@
                  var link = window.location.origin + response['link'];
                  var len = link.length;
                  var link = "<input type='text' disables value=" + link + " SIZE=" + len + ">";
-                 $("#result").html(link);
+                 var offers = "<p style='color:grey;padding:2em'>Oferty: " + response['offers'] + "</p>";
+                 
+                 $(".modal-body").html(link + offers);
+                 $('#myModal').modal('show');
+                 
+                 /* $("#result").html(link); */
              },
+             error: function() {
+                 $('.modal-body').html("<p>Brak ofert w schowku</p>");
+                 $('#myModal').modal('show');
+             }
          });
      });
+
     </script>
 {% endblock %}

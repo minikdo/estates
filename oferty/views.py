@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db import IntegrityError
+# from django.db import IntegrityError
 from django.db.models import Q
 from django.utils.text import slugify
 from django.views.generic import FormView, TemplateView, DetailView, View
@@ -49,9 +49,9 @@ def post_data(request):
 
         # any(not isinstance(x, (int, float)) for x in [a,b,c,d])
         # if any(not isinstance(var, int) for var in [rodzaj,
-                                                    # typ,
-                                                    # miasto]):
-            # return HttpResponse(status=400)
+        #                                             typ,
+        #                                             miasto]):
+        #     return HttpResponse(status=400)
 
         rodzaj = get_object_or_404(OfertyRodzaj, pk=rodzaj).nazwa
         rodzaj = slugify(rodzaj)
@@ -338,9 +338,11 @@ def detail_pdf(request, **kwargs):
 class CustomOfferAdd(View):
     def post(self, request):
 
+        # import pdb; pdb.set_trace()
+
         post_list = request.POST.getlist('offer[]', None)
 
-        if 'offer' not in self.request.session:
+        if hasattr(self.request.session, 'offer'):
             self.request.session['offer'] = []
 
         res = self.request.session['offer']
@@ -353,7 +355,9 @@ class CustomOfferAdd(View):
                 else:
                     if x not in res:
                         res.append(x)
-                self.request.session['offer'] = res
+
+        res.sort()
+        self.request.session['offer'] = res
 
         print(self.request.session['offer'])
         return JsonResponse({}, status=201)
@@ -369,6 +373,9 @@ class GetLink(View):
         except KeyError:
             return JsonResponse({'link': 'brak danych'}, status=404)
 
+        if not offers:
+            return JsonResponse({'link': 'brak danych'}, status=404)
+
         try:
             customoffer = CustomOffer.objects.get(offer_list=offers)
         except CustomOffer.DoesNotExist:
@@ -381,4 +388,4 @@ class GetLink(View):
             token = customoffer.token
 
         link = reverse('oferty:link', kwargs={'token': token})
-        return JsonResponse({'link': link}, status=200)
+        return JsonResponse({'link': link, 'offers': offers}, status=200)
