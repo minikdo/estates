@@ -1,19 +1,22 @@
-from django.urls import reverse_lazy
-from django.http import HttpResponse
+from django.urls import reverse, reverse_lazy
+from django.http import HttpResponse, JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
+from django.db import IntegrityError
 from django.db.models import Q
 from django.utils.text import slugify
-from django.views.generic import FormView, TemplateView, DetailView
+from django.views.generic import FormView, TemplateView, DetailView, View
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+
+from secrets import token_urlsafe
 
 from envelope.views import ContactView as EnvelopeContactView
 from djatex import render_latex
 
-from .models import OfertyEst, OfertyFpage, OfertyMiasto, OfertyRodzaj,\
-    OfertyTyp, OfertyEstPhoto
+from .models import (OfertyEst, OfertyFpage, OfertyMiasto, OfertyRodzaj,
+                     OfertyTyp, OfertyEstPhoto, CustomOffer)
 from .forms import CategorizedContactForm
 from .forms import OfertySearchForm, DetailContactForm
 from .mixins import SearchFormMixin
@@ -110,6 +113,64 @@ def get_from_list(objs, msg):
     return objs[0]
 
 
+def customlist(request):
+
+    oferty = OfertyEst.objects.filter(
+        Q(pk__in=request.session['offer']),
+        Q(status=0)).order_by('miasto')
+
+    paginator = Paginator(oferty, 10)
+
+    page = request.GET.get('page')
+    try:
+        oferty = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        oferty = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        oferty = paginator.page(paginator.num_pages)
+
+    # Main offer search form
+    # default: (1) sprzedaż / (1) dom / (12) Ustroń
+    form = OfertySearchForm({'rodzaj': 1, 'typ': 1, 'miasto': 12})
+
+    return render(request, 'oferty/index.html',
+                  {'oferty': oferty, 'form': form})
+
+
+def link(request, token):
+
+    from json import loads
+
+    offer_list = CustomOffer.objects.get(token=token).offer_list
+
+    offer_list = loads(offer_list)
+
+    oferty = OfertyEst.objects.filter(
+        Q(pk__in=offer_list),
+        Q(status=0)).order_by('miasto')
+
+    paginator = Paginator(oferty, 10)
+
+    page = request.GET.get('page')
+    try:
+        oferty = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        oferty = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        oferty = paginator.page(paginator.num_pages)
+
+    # Main offer search form
+    # default: (1) sprzedaż / (1) dom / (12) Ustroń
+    form = OfertySearchForm({'rodzaj': 1, 'typ': 1, 'miasto': 12})
+
+    return render(request, 'oferty/index.html',
+                  {'oferty': oferty, 'form': form})
+
+
 def sprzedane(request):
     """
     List lately sold offers
@@ -172,7 +233,7 @@ def result(request, rodzaj, typ, miasto):
     """
 
     miasto_id = get_object_or_404(OfertyMiasto, nazwa_flat=miasto).id
-    rodzaj_objs = [r for r in OfertyRodzaj.objects.all() if slugify(r.nazwa) == rodzaj]
+    rodzaj_objs = [r for r in OfertyRodzaj.objects.all() if slugify(r.nazwa) == rodzaj]  # noqa
     typ_objs = [t for t in OfertyTyp.objects.all() if slugify(t.nazwa) == typ]
 
     rodzaj_id = get_from_list(rodzaj_objs, 'Nie ma takiego rodzaju').id
@@ -266,9 +327,58 @@ def detail_pdf(request, **kwargs):
 
     context = {'oferta': oferta, 'photo': photo,
                'graphicspath': settings.LATEX_GRAPHICSPATH}
-    
+
     return render_latex(request, filename, 'oferty/detail.tex',
                         error_template_name='oferty/error.html',
                         home_dir=settings.TEX_HOME,
                         # build_dir=settings.TEX_HOME,
                         context=context)
+
+
+class CustomOfferAdd(View):
+    def post(self, request):
+
+        post_list = request.POST.getlist('offer[]', None)
+
+        if 'offer' not in self.request.session:
+            self.request.session['offer'] = []
+
+        res = self.request.session['offer']
+        if len(post_list) > 0 and len(post_list) < 25:
+            for x in post_list:
+                try:
+                    x = int(x)
+                except ValueError:
+                    pass
+                else:
+                    if x not in res:
+                        res.append(x)
+                self.request.session['offer'] = res
+
+        print(self.request.session['offer'])
+        return JsonResponse({}, status=201)
+
+
+class GetLink(View):
+    def post(self, request):
+
+        token = token_urlsafe(8)
+
+        try:
+            offers = self.request.session['offer']
+        except KeyError:
+            return JsonResponse({'link': 'brak danych'}, status=404)
+
+        try:
+            customoffer = CustomOffer.objects.get(offer_list=offers)
+        except CustomOffer.DoesNotExist:
+            CustomOffer.objects.create(
+                token=token,
+                ip=request.META.get('REMOTE_ADDR'),
+                offer_list=offers,
+            )
+        else:
+            token = customoffer.token
+
+        link = reverse('oferty:link', kwargs={'token': token})
+        return JsonResponse({'link': link}, status=200)

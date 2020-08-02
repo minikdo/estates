@@ -1,5 +1,6 @@
 from django.db import models
 # from django.urls import reverse
+from django.core.validators import int_list_validator
 
 
 class OfertyNazwa(models.Model):
@@ -670,3 +671,12 @@ class OfertyUsers(models.Model):
     license = models.CharField(max_length=30)
     license2 = models.CharField(max_length=30)
     is_active = models.BooleanField(default=True)
+
+
+class CustomOffer(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+    token = models.CharField(max_length=16)
+    ip = models.GenericIPAddressField(null=True)
+    offer_list = models.CharField(validators=[int_list_validator],
+                                  max_length=100,
+                                  unique=True)

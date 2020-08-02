@@ -1,4 +1,5 @@
 from django.urls import re_path, path
+
 from . import views
 
 
@@ -17,4 +18,8 @@ urlpatterns = [
     path('polityka-prywatnosci/', views.PrivacyPolicy.as_view(),
          name='policy'),
     path('<int:pk>/pdf/', views.detail_pdf, name='detail-pdf'),
+    path('add/', views.CustomOfferAdd.as_view(), name='add'),
+    path('moje/', views.customlist, name='customlist'),
+    path('link/<str:token>/', views.link, name='link'),
+    path('get_link/', views.GetLink.as_view(), name='get_link'),
 ]
