@@ -115,6 +115,9 @@ def get_from_list(objs, msg):
 
 def clipboard(request):
 
+    if 'offer' not in request.session:
+        raise Http404()
+
     oferty = OfertyEst.objects.filter(
         Q(pk__in=request.session['offer']),
         Q(status=0)).order_by('miasto')
@@ -143,7 +146,10 @@ def link(request, token):
 
     from json import loads
 
-    offer_list = Clipboard.objects.get(token=token).offer_list
+    try:
+        offer_list = Clipboard.objects.get(token=token).offer_list
+    except Clipboard.DoesNotExist:
+        raise Http404()
 
     offer_list = loads(offer_list)
 
