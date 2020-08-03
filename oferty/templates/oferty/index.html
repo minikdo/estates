@@ -132,7 +132,7 @@
 
 	                                        {% endif %}
 	                                        <span class="label label-warning">Oferta {{ oferta.pk }}</span>
-                                            <input type="checkbox" name="offer" value="{{ oferta.pk }}">
+                                            <input type="checkbox" name="offer" class="checkbox-offer" value="{{ oferta.pk }}">
 	                                    </div>
 	                                </div>
 	                            </div>
@@ -179,12 +179,23 @@
 
                     <div class="row">
                         <div class="col-12 text-right" style="margin-top: 3em; margin-bottom: 3em">
-                            
+
                             <a id="get_link" style="margin-right: 1.5em"><span class="glyphicon glyphicon-link"></span>pobierz link</a>
 
                             {% if request.path == '/oferty/schowek/' %}
                                 <input type="submit" id="offerdelete" name="submit" value="usuń" class="btn btn-danger">
                                 <a href="{% url 'oferty:delete_all' %}" class="text-danger" style="margin-left: 1em">usuń schowek</a>
+                                <script>
+                                 function uncheckAll() {
+                                     var inputs = document.querySelectorAll('.checkbox-offer');
+                                     for (var i = 0; i < inputs.length; i++) {
+                                         inputs[i].checked = false;
+                                     }
+                                 }
+                                 window.onload = function() {
+                                     uncheckAll();
+                                 }
+                                </script>
                             {% else %}
                                 <input type="submit" id="offersubmit" name="submit" value="dodaj do schowka" class="btn btn-success">
                                 {% if request.session.offer %}
