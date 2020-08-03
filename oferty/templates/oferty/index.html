@@ -179,11 +179,12 @@
 
                     <div class="row">
                         <div class="col-12 text-right" style="margin-top: 3em; margin-bottom: 3em">
-                            <a id="get_link">pobierz link</a>
+                            
+                            <a id="get_link" style="margin-right: 1.5em"><span class="glyphicon glyphicon-link"></span>pobierz link</a>
 
                             {% if request.path == '/oferty/schowek/' %}
                                 <input type="submit" id="offerdelete" name="submit" value="usuń" class="btn btn-danger">
-                                <a href="{% url 'oferty:delete_all' %}" class="text-danger">usuń schowek</a>
+                                <a href="{% url 'oferty:delete_all' %}" class="text-danger" style="margin-left: 1em">usuń schowek</a>
                             {% else %}
                                 <input type="submit" id="offersubmit" name="submit" value="dodaj do schowka" class="btn btn-success">
                                 {% if request.session.offer %}
@@ -275,8 +276,6 @@
 
                  $(".modal-body").html(link + offers);
                  $('#myModal').modal('show');
-
-                 /* $("#result").html(link); */
              },
              error: function() {
                  $('.modal-body').html("<p>Brak ofert w schowku</p>");
