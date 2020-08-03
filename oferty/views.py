@@ -344,8 +344,6 @@ def detail_pdf(request, **kwargs):
 class ClipboardAdd(View):
     def post(self, request):
 
-        # import pdb; pdb.set_trace()
-
         post_list = request.POST.getlist('offer[]', None)
 
         if 'offer' in self.request.session:
@@ -360,7 +358,9 @@ class ClipboardAdd(View):
                 except ValueError:
                     pass
                 else:
-                    if x not in res:
+                    # FIXME: double check
+                    q = OfertyEst.objects.filter(pk=x, status=0)
+                    if q.count() > 0 and x not in res:
                         res.append(x)
         else:
             return JsonResponse({'response': 'brak danych POST'}, status=404)
