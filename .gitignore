@@ -5,6 +5,7 @@
 /.envrc
 /media/
 /static/oferty/
+/static/fonts/
 /htpasswd
 /static/robots.txt
 /vars.yml
