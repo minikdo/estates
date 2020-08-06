@@ -10,7 +10,7 @@ body {
     background-position: center top;
     background-attachment: fixed;
     color: darkgreen;
-    font-family: "Open Sans";
+    font-family: "Open Sans", -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     /* Margin bottom by footer height */
     margin-bottom: 164px;
 }
