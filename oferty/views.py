@@ -3,7 +3,6 @@ from django.http import HttpResponse, JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
-# from django.db import IntegrityError
 from django.db.models import Q
 from django.utils.text import slugify
 from django.views.generic import FormView, TemplateView, DetailView, View
