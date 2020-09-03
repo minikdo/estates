@@ -3,7 +3,7 @@ from django import forms
 from django.db.models import Count
 # from crispy_forms.helper import FormHelper
 # from crispy_forms.layout import Submit
-from .models import OfertyMiasto, OfertyTyp
+from .models import OfertyMiasto, OfertyTyp, OfertyEst
 from envelope.forms import ContactForm
 from django.utils.translation import ugettext_lazy as _
 from collections import OrderedDict
@@ -93,7 +93,27 @@ class DetailContactForm(ContactForm):
         self.fields['subject'].widget = forms.HiddenInput()
         self.fields['sender'].widget = forms.HiddenInput()
         self.fields['subject'].initial = 'oferta'
-        # self.fields['category'].initial = 11  # category: Others
 
         self.fields = OrderedDict(sorted(self.fields.items(),
                                          key=lambda x: keys.index(x[0])))
+
+    def get_object(self):
+        oferta_id = int(self.cleaned_data['sender'])
+        return OfertyEst.objects.get(id=oferta_id)
+
+    def get_email_recipients(self):
+        biuro_id = self.get_object().miasto.biuro.id
+
+        if biuro_id not in (1, 2):
+            return settings.ENVELOPE_EMAIL_RECIPIENTS
+
+        return settings.ENVELOPE_EMAIL_RECIPIENTS_MAP[biuro_id]
+
+    def get_subject(self):
+        return 'Wiadomość z formularza kontaktowego oferty: {}'\
+            .format(self.cleaned_data['sender'])
+
+    def get_context(self, **kwargs):
+        context = super().get_context(**kwargs)
+        context['oferta'] = self.get_object()
+        return context

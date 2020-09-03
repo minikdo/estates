@@ -9,6 +9,9 @@ class OfertyNazwa(models.Model):
     name_de = models.CharField(max_length=50)
     nazwa_poz = models.CharField(max_length=40)
 
+    def __str__(self):
+        return self.nazwa
+
     class Meta:
         managed = True
         db_table = 'oferty_nazwa'
@@ -53,6 +56,9 @@ class OfertyRodzaj(models.Model):
     nazwa = models.CharField(max_length=15)
     nazwa_msc = models.CharField(max_length=15)
     nazwa_d = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.nazwa
 
     class Meta:
         managed = True
@@ -101,6 +107,10 @@ class OfertyEst(models.Model):
             return "zł za metr"
         else:
             return "zł"
+
+    def __str__(self):
+        return "{}, {}, {}, {} zł".format(self.rodzaj, self.nazwa,
+                                          self.miasto, self.cena)
 
     class Meta:
         managed = True
