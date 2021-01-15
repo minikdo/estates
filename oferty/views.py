@@ -313,31 +313,38 @@ class PrivacyPolicy(SearchFormMixin, TemplateView):
     template_name = "oferty/policy.html"
 
 
-def detail_pdf(request, **kwargs):
+class DetailPdf(View):
     """ Render a pdf with offer details """
 
-    pk = kwargs['pk']
+    def post(self, request):
 
-    oferta = get_object_or_404(OfertyEst, Q(status=0), pk=pk)
+        pk = request.POST.get('est_id', 0)
 
-    try:
-        photo = oferta.ofertyestphoto_set.get(thumbnail=True).filename
-    except OfertyEstPhoto.DoesNotExist:
-        photo = ''
-    else:
-        # escape underscore for xelatex
-        photo = photo.replace('_', '\\string_')
+        try:
+            int(pk)
+        except ValueError:
+            raise Http404()
 
-    filename = "domino_oferta_{}.pdf".format(pk)
+        oferta = get_object_or_404(OfertyEst, Q(status=0), pk=pk)
 
-    context = {'oferta': oferta, 'photo': photo,
-               'graphicspath': settings.LATEX_GRAPHICSPATH}
+        try:
+            photo = oferta.ofertyestphoto_set.get(thumbnail=True).filename
+        except OfertyEstPhoto.DoesNotExist:
+            photo = ''
+        else:
+            # escape underscore for xelatex
+            photo = photo.replace('_', '\\string_')
 
-    return render_latex(request, filename, 'oferty/detail.tex',
-                        error_template_name='oferty/error.html',
-                        home_dir=settings.TEX_HOME,
-                        # build_dir=settings.TEX_HOME,
-                        context=context)
+        filename = "domino_oferta_{}.pdf".format(pk)
+
+        context = {'oferta': oferta, 'photo': photo,
+                   'graphicspath': settings.LATEX_GRAPHICSPATH}
+
+        return render_latex(request, filename, 'oferty/detail.tex',
+                            error_template_name='oferty/error.html',
+                            home_dir=settings.TEX_HOME,
+                            # build_dir=settings.TEX_HOME,
+                            context=context)
 
 
 class ClipboardAdd(View):

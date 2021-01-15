@@ -17,7 +17,7 @@ urlpatterns = [
     path('dziekujemy/', views.ThankYou.as_view(), name='thankyou'),
     path('polityka-prywatnosci/', views.PrivacyPolicy.as_view(),
          name='policy'),
-    path('<int:pk>/pdf/', views.detail_pdf, name='detail-pdf'),
+    path('pdf/', views.DetailPdf.as_view(), name='detail-pdf'),
     path('add/', views.ClipboardAdd.as_view(), name='add'),
     path('delete/', views.ClipboardDelete.as_view(), name='delete'),
     path('delete_all/', views.ClipboardDeleteAll.as_view(), name='delete_all'),
